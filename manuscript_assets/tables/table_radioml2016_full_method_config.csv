@@ -1,0 +1,4 @@
+method,models,train_examples,test_examples
+Classical baselines,Logistic Regression; Random Forest; RBF-SVM,30000,10000
+Raw-IQ CNN,Compact 1D convolutional neural network,80000,20000
+Simulated QFM-Kernel SVM,Five-qubit simulated feature-map kernel with SVM,120 per class cap,80 per class cap

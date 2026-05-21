@@ -25,6 +25,7 @@ results/**/*.joblib
 results/**/checkpoints/
 results/**/models/
 results/radioml2016_smoke_cnn_30epoch/
+results/radioml2016_*/
 
 # Local system/editor files
 .idea/

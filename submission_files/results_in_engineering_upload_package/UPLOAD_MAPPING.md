@@ -17,9 +17,11 @@ Use this mapping for the journal's file-type dropdown.
 |---|---|
 | Cover letter | `05_Cover_Letter.docx` |
 | Table (Editable version) | `06_Tables_Editable.docx` |
-| Figure | `Figure_1_Synthetic_Clean_Accuracy.png` |
-| Figure | `Figure_2_Synthetic_Accuracy_By_SNR.png` |
-| Figure | `Figure_3_Synthetic_Robustness_Heatmap.png` |
+| Figure | `Figure_1_RadioML_Clean_Accuracy.png` |
+| Figure | `Figure_2_RadioML_Robustness_Drop.png` |
+| Figure | `Figure_3_Synthetic_Clean_Accuracy.png` |
+| Figure | `Figure_4_Synthetic_Accuracy_By_SNR.png` |
+| Figure | `Figure_5_Synthetic_Robustness_Heatmap.png` |
 | Supplementary Material (unmarked version, for production) | `07_Supplementary_Material_Unmarked.docx` |
 | Research Data | `08_Research_Data_README.docx` |
 
@@ -34,4 +36,4 @@ Use this mapping for the journal's file-type dropdown.
 
 ## Readiness Note
 
-This package is aligned to the journal upload categories, but the manuscript should be updated after the full GPU-based RadioML run before final submission.
+This package is aligned to the journal upload categories and includes the full GPU-based RadioML2016.10A benchmark results.

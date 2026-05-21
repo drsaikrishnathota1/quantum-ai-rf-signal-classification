@@ -12,10 +12,10 @@ paper.
 
 ## Ethics Approval
 
-This study uses synthetic RF/IQ simulations and planned public RF benchmark
-datasets. No human participants, animal subjects, patient records, or personally
-identifiable information are involved. Formal ethics approval was therefore not
-required.
+This study uses synthetic RF/IQ simulations and the public RadioML2016.10A RF
+benchmark dataset. No human participants, animal subjects, patient records, or
+personally identifiable information are involved. Formal ethics approval was
+therefore not required.
 
 ## Data And Code Availability
 
@@ -25,9 +25,9 @@ reproducibility instructions will be available at:
 https://github.com/drsaikrishnathota1/quantum-ai-rf-signal-classification
 
 Synthetic datasets are generated from repository scripts and are excluded from
-Git because they are reproducible binary artifacts. Public benchmark datasets
-will not be redistributed; access instructions and license terms will be cited
-from the original data providers.
+Git because they are reproducible binary artifacts. The RadioML2016.10A raw
+dataset is not redistributed; access instructions and license terms are cited
+from the original data provider or validated public mirror.
 
 ## Author Contribution
 

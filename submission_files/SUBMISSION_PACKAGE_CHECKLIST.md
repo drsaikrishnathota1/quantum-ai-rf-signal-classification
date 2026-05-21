@@ -5,15 +5,15 @@ Article type: **Original Article**
 
 ## Current Readiness
 
-Status: **not ready for final submission yet, but public-benchmark ingestion is now validated**
+Status: **ready for final author review before submission**
 
 Reason:
 
-- The synthetic experiment pipeline is working.
+- The synthetic experiment pipeline is complete.
 - Classical, CNN, and simulated quantum-kernel baselines are implemented.
-- RadioML2016.10A smoke validation now runs end to end.
-- A Results in Engineering submission should still include a longer GPU-based
-  public-benchmark run before submission.
+- RadioML2016.10A full GPU validation is complete.
+- The manuscript package now includes full RadioML clean-performance and
+  robustness-drop evidence.
 
 ## Files To Prepare For Final Upload
 
@@ -53,12 +53,10 @@ Recommended:
 - `manuscript_assets/figures/fig_synthetic_clean_accuracy.png`
 - `manuscript_assets/figures/fig_synthetic_robustness_drop_heatmap.png`
 
-## Must Complete Before Submission
+## Final Author Review Before Submission
 
-1. Add RadioML2016.10A validation.
-2. Add at least one stronger deep-learning model or ablation, if runtime allows.
-3. Add final accuracy-by-SNR figure across all main models.
-4. Add final confusion matrices for clean and worst stress condition.
-5. Add final limitations section explaining synthetic and public-data scope.
-6. Convert the final manuscript into DOCX.
-7. Check journal formatting, word count, figure quality, and references.
+1. Read `03_Manuscript.docx` once end to end.
+2. Confirm author details on `04_Title_Page_Editable.docx`.
+3. Upload the required starred files in the journal portal.
+4. Upload figures and editable tables as optional supporting files.
+5. Do not upload raw RadioML data or large binary model files unless the journal asks.
