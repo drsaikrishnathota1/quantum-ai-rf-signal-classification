@@ -24,8 +24,8 @@ data/external/
 results/**/*.joblib
 results/**/checkpoints/
 results/**/models/
+results/radioml2016_smoke_cnn_30epoch/
 
 # Local system/editor files
 .idea/
 .vscode/
-

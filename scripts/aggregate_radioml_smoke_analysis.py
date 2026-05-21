@@ -115,9 +115,10 @@ def main() -> None:
         "",
         "The RadioML smoke run confirms that the public-benchmark ingestion, stress generation, "
         "classical baselines, CNN baseline, and simulated quantum feature-map kernel baseline "
-        "all execute successfully. The current CNN result is intentionally under-trained "
-        "because it uses only five local CPU epochs. Final manuscript claims should use a "
-        "longer GPU run and report RadioML results separately from synthetic results.",
+        "all execute successfully. The current CNN result uses a local CPU smoke run with "
+        "best-epoch restoration from a 30-epoch training history. Final manuscript claims "
+        "should use a longer GPU run on the full RadioML dataset and report RadioML results "
+        "separately from synthetic results.",
     ]
     args.report_out.write_text("\n".join(report) + "\n", encoding="utf-8")
     print(f"Wrote tables to {args.tables_out}")

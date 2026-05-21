@@ -18,7 +18,7 @@ It is not the final RadioML result table for the manuscript.
 | rbf_svm | RBF-SVM | 2200.0000 | 0.4555 | 0.4700 |
 | random_forest | Random Forest | 2200.0000 | 0.4523 | 0.4603 |
 | logistic_regression | Logistic Regression | 2200.0000 | 0.4300 | 0.4293 |
-| iq_cnn | Raw-IQ CNN | 2200.0000 | 0.3214 | 0.2698 |
+| iq_cnn | Raw-IQ CNN | 2200.0000 | 0.3768 | 0.3549 |
 | simulated_quantum_feature_kernel_svm | Simulated QFM-Kernel SVM | 330.0000 | 0.3000 | 0.2850 |
 
 ## Worst Robustness Drops
@@ -36,4 +36,4 @@ It is not the final RadioML result table for the manuscript.
 
 ## Interpretation
 
-The RadioML smoke run confirms that the public-benchmark ingestion, stress generation, classical baselines, CNN baseline, and simulated quantum feature-map kernel baseline all execute successfully. The current CNN result is intentionally under-trained because it uses only five local CPU epochs. Final manuscript claims should use a longer GPU run and report RadioML results separately from synthetic results.
+The RadioML smoke run confirms that the public-benchmark ingestion, stress generation, classical baselines, CNN baseline, and simulated quantum feature-map kernel baseline all execute successfully. The current CNN result uses a local CPU smoke run with best-epoch restoration from a 30-epoch training history. Final manuscript claims should use a longer GPU run on the full RadioML dataset and report RadioML results separately from synthetic results.

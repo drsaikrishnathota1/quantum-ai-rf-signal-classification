@@ -200,7 +200,7 @@ Commands:
 .venv/bin/python scripts/prepare_radioml2016_npz.py --input data/radioml/RML2016.10a_dict.pkl --out data/radioml/radioml2016_10a_clean_smoke.npz --max-examples-per-mod-snr 100
 .venv/bin/python scripts/add_stress_conditions_to_npz.py --input data/radioml/radioml2016_10a_clean_smoke.npz --out data/radioml/radioml2016_10a_stress_smoke.npz
 .venv/bin/python scripts/train_pilot_classifiers.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_classical --max-train-examples 6000 --max-test-examples 2200
-.venv/bin/python scripts/train_cnn_iq_baseline.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_cnn --epochs 5 --batch-size 256 --max-train-examples 6000 --max-test-examples 2200
+.venv/bin/python scripts/train_cnn_iq_baseline.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_cnn_best_30epoch --epochs 30 --batch-size 256 --max-train-examples 6000 --max-test-examples 2200
 .venv/bin/python scripts/train_quantum_inspired_kernel.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_quantum_kernel --qubits 5 --max-train-per-class 50 --max-test-per-class 30
 .venv/bin/python scripts/aggregate_radioml_smoke_analysis.py
 ```
@@ -212,13 +212,13 @@ Clean smoke performance:
 | RBF-SVM | 2200 | 0.4555 | 0.4700 |
 | Random Forest | 2200 | 0.4523 | 0.4603 |
 | Logistic Regression | 2200 | 0.4300 | 0.4293 |
-| Raw-IQ CNN | 2200 | 0.3214 | 0.2698 |
+| Raw-IQ CNN | 2200 | 0.3768 | 0.3549 |
 | Simulated QFM-Kernel SVM | 330 | 0.3000 | 0.2850 |
 
 Interpretation:
 
 The RadioML smoke run proves the public-benchmark workflow is connected and
-reproducible. The CNN result is intentionally under-trained because it used
-only five local CPU epochs. Final RadioML claims should be produced with a
-longer GPU run, likely on RunPod, and should be reported separately from the
-synthetic controlled-stress results.
+reproducible. The CNN result uses best-epoch restoration from a 30-epoch local
+CPU smoke run. Final RadioML claims should still be produced with a longer GPU
+run on the full dataset, likely on RunPod, and should be reported separately
+from the synthetic controlled-stress results.

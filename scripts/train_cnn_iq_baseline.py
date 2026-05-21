@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 from pathlib import Path
 
@@ -170,6 +171,9 @@ def main() -> None:
     train_loader = make_loader(x_train, y_train, args.batch_size, True)
 
     history = []
+    best_score = (-1.0, -1.0)
+    best_epoch = 0
+    best_state = copy.deepcopy(model.state_dict())
     for epoch in range(1, args.epochs + 1):
         model.train()
         total_loss = 0.0
@@ -183,10 +187,19 @@ def main() -> None:
         train_loss = total_loss / len(y_train)
         clean_eval = evaluate(model, "heldout_clean", x_test, y_test, args.batch_size, device)
         history.append({"epoch": epoch, "train_loss": train_loss, **clean_eval})
+        score = (float(clean_eval["accuracy"]), float(clean_eval["macro_f1"]))
+        if score > best_score:
+            best_score = score
+            best_epoch = epoch
+            best_state = copy.deepcopy({k: v.detach().cpu() for k, v in model.state_dict().items()})
         print(
             f"epoch={epoch:03d} loss={train_loss:.4f} "
             f"heldout_acc={clean_eval['accuracy']:.4f} heldout_f1={clean_eval['macro_f1']:.4f}"
         )
+
+    model.load_state_dict(best_state)
+    model.to(device)
+    print(f"Restored best epoch: {best_epoch} acc={best_score[0]:.4f} f1={best_score[1]:.4f}")
 
     records = [evaluate(model, "heldout_clean", x_test, y_test, args.batch_size, device)]
     for condition in stress_conditions:
@@ -246,6 +259,7 @@ def main() -> None:
         "device": str(device),
         "train_examples": int(len(train_idx)),
         "test_examples": int(len(test_idx)),
+        "best_epoch": int(best_epoch),
         "modulations": modulations,
         "clean_accuracy": float(clean["accuracy"]),
         "clean_macro_f1": float(clean["macro_f1"]),
