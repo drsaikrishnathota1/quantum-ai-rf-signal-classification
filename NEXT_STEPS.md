@@ -27,6 +27,12 @@ data/radioml/
 Do not commit or redistribute the dataset. We should cite the original source
 and license terms in the manuscript.
 
+Then follow:
+
+```text
+runbooks/RADIOML_WORKFLOW.md
+```
+
 ## Next Step 2: Paper-Grade Synthetic Scale
 
 On RunPod or another GPU server:

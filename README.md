@@ -61,3 +61,11 @@ classes. Clean held-out accuracy is:
 
 These are pilot results, not final submission claims. The next paper-grade step
 is to validate the same workflow on a public RadioML benchmark.
+
+## Public Benchmark Workflow
+
+After manually downloading RadioML2016.10A, follow:
+
+```text
+runbooks/RADIOML_WORKFLOW.md
+```
