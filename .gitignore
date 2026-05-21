@@ -1,0 +1,31 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Large or reproducible data files
+data/*.npz
+data/*.pkl
+data/*.h5
+data/radioml/
+data/raw/
+data/external/
+
+# Trained model binaries and checkpoints
+*.pt
+*.pth
+*.onnx
+*.ckpt
+*.joblib
+results/**/*.joblib
+results/**/checkpoints/
+results/**/models/
+
+# Local system/editor files
+.idea/
+.vscode/
+

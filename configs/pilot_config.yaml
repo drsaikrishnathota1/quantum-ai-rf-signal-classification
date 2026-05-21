@@ -1,0 +1,29 @@
+seed: 2026
+sample_rate: 1.0
+samples_per_signal: 128
+samples_per_class: 300
+snr_db_values: [-6, 0, 6, 12, 18]
+modulations:
+  - BPSK
+  - QPSK
+  - 8PSK
+  - QAM16
+  - QAM64
+  - BFSK
+  - AM-DSB
+  - FM
+stress_conditions:
+  clean:
+    enabled: true
+  narrowband_jam:
+    jammer_to_signal_db: -3
+  broadband_jam:
+    jammer_to_signal_db: 0
+  multipath:
+    taps: 3
+  frequency_offset:
+    normalized_offset: 0.03
+  impulsive_noise:
+    probability: 0.015
+    amplitude: 5.0
+

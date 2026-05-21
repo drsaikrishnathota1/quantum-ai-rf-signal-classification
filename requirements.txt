@@ -1,0 +1,13 @@
+numpy
+scipy
+pandas
+scikit-learn
+matplotlib
+seaborn
+tqdm
+pyyaml
+joblib
+torch
+qiskit
+qiskit-machine-learning
+

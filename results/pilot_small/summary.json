@@ -1,0 +1,25 @@
+{
+  "dataset": "data/pilot_iq_small.npz",
+  "num_examples": 480,
+  "num_classes": 8,
+  "modulations": [
+    "BPSK",
+    "QPSK",
+    "8PSK",
+    "QAM16",
+    "QAM64",
+    "BFSK",
+    "AM-DSB",
+    "FM"
+  ],
+  "stress_conditions": [
+    "clean",
+    "low_snr",
+    "narrowband_jam",
+    "broadband_jam",
+    "frequency_offset",
+    "multipath",
+    "impulsive_noise"
+  ],
+  "best_clean_accuracy": 0.8583333333333333
+}
