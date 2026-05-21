@@ -1,0 +1,6 @@
+model,model_label,examples,accuracy,macro_f1
+rbf_svm,RBF-SVM,2200.0,0.4554545454545454,0.4699971299431584
+random_forest,Random Forest,2200.0,0.4522727272727272,0.4602874791978782
+logistic_regression,Logistic Regression,2200.0,0.43,0.4292747322355201
+iq_cnn,Raw-IQ CNN,2200.0,0.3213636363636363,0.2697637851456598
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,330.0,0.3,0.2849870643924095

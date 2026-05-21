@@ -5,14 +5,15 @@ Article type: **Original Article**
 
 ## Current Readiness
 
-Status: **not ready for final submission yet**
+Status: **not ready for final submission yet, but public-benchmark ingestion is now validated**
 
 Reason:
 
 - The synthetic experiment pipeline is working.
 - Classical, CNN, and simulated quantum-kernel baselines are implemented.
-- Current evidence is useful, but a Results in Engineering submission should
-  include public-benchmark validation before submission.
+- RadioML2016.10A smoke validation now runs end to end.
+- A Results in Engineering submission should still include a longer GPU-based
+  public-benchmark run before submission.
 
 ## Files To Prepare For Final Upload
 

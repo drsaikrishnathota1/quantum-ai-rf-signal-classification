@@ -1,0 +1,9 @@
+model,condition,examples,accuracy,macro_f1
+simulated_quantum_feature_kernel_svm,heldout_clean,330,0.3,0.2849870643924095
+simulated_quantum_feature_kernel_svm,clean,330,0.3,0.2849870643924095
+simulated_quantum_feature_kernel_svm,low_snr,330,0.07878787878787878,0.04686012774793167
+simulated_quantum_feature_kernel_svm,narrowband_jam,330,0.1,0.0660449637638227
+simulated_quantum_feature_kernel_svm,broadband_jam,330,0.09696969696969697,0.0674115539478025
+simulated_quantum_feature_kernel_svm,frequency_offset,330,0.07575757575757576,0.04188866544792605
+simulated_quantum_feature_kernel_svm,multipath,330,0.09090909090909091,0.06165567627918116
+simulated_quantum_feature_kernel_svm,impulsive_noise,330,0.08484848484848485,0.058193520220526755

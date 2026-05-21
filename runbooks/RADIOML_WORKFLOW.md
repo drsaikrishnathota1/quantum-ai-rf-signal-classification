@@ -43,7 +43,9 @@ For a faster smoke test:
 ```bash
 .venv/bin/python scripts/train_pilot_classifiers.py \
   --data data/radioml/radioml2016_10a_stress.npz \
-  --out results/radioml2016_classical
+  --out results/radioml2016_classical \
+  --max-train-examples 30000 \
+  --max-test-examples 10000
 ```
 
 ## 5. Train Raw-IQ CNN

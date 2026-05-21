@@ -48,6 +48,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument("--max-train-examples", type=int, default=0)
+    parser.add_argument("--max-test-examples", type=int, default=0)
     parser.add_argument(
         "--device",
         choices=["auto", "cpu", "cuda", "mps"],
@@ -55,6 +57,31 @@ def parse_args() -> argparse.Namespace:
         help="Training device. Use auto for CUDA on RunPod, MPS on Apple Silicon, then CPU fallback.",
     )
     return parser.parse_args()
+
+
+def stratified_limit_indices(
+    indices: np.ndarray,
+    y: np.ndarray,
+    max_examples: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    if max_examples <= 0 or len(indices) <= max_examples:
+        return indices
+    classes = np.unique(y[indices])
+    per_class = max(1, max_examples // len(classes))
+    selected = []
+    for cls in classes:
+        cls_idx = indices[y[indices] == cls]
+        take = min(per_class, len(cls_idx))
+        selected.extend(rng.choice(cls_idx, size=take, replace=False).tolist())
+    selected = np.asarray(selected, dtype=np.int64)
+    if len(selected) < max_examples:
+        remaining = np.setdiff1d(indices, selected, assume_unique=False)
+        extra_count = min(max_examples - len(selected), len(remaining))
+        if extra_count > 0:
+            selected = np.concatenate([selected, rng.choice(remaining, size=extra_count, replace=False)])
+    rng.shuffle(selected)
+    return selected
 
 
 def resolve_device(name: str) -> torch.device:
@@ -114,6 +141,7 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
+    rng = np.random.default_rng(args.seed)
 
     data = np.load(args.data, allow_pickle=True)
     x = data["X"]
@@ -129,6 +157,8 @@ def main() -> None:
         random_state=args.seed,
         stratify=y,
     )
+    train_idx = stratified_limit_indices(train_idx, y, args.max_train_examples, rng)
+    test_idx = stratified_limit_indices(test_idx, y, args.max_test_examples, rng)
     x_train, y_train = x[train_idx], y[train_idx]
     x_test, y_test = x[test_idx], y[test_idx]
 
@@ -214,6 +244,8 @@ def main() -> None:
         "epochs": args.epochs,
         "batch_size": args.batch_size,
         "device": str(device),
+        "train_examples": int(len(train_idx)),
+        "test_examples": int(len(test_idx)),
         "modulations": modulations,
         "clean_accuracy": float(clean["accuracy"]),
         "clean_macro_f1": float(clean["macro_f1"]),

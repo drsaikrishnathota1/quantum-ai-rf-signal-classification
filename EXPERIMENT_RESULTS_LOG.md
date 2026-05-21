@@ -177,3 +177,48 @@ New generated assets:
 - `results/synthetic_500/accuracy_by_snr.csv`
 - `manuscript_assets/tables/table_synthetic_model_robustness_summary.csv`
 - `manuscript_assets/tables/table_synthetic_best_model_by_condition.csv`
+
+## 2026-05-21 RadioML2016.10A Public Benchmark Smoke Test
+
+Purpose:
+
+Validate that the public RadioML2016.10A benchmark can be ingested and evaluated
+with the same classical, CNN, and simulated quantum-kernel pipeline. This is a
+fast proof-of-flow, not the final paper-grade RadioML result.
+
+Input:
+
+- Source file: `data/radioml/RML2016.10a_dict.pkl`
+- Smoke subset: 100 examples per modulation-SNR pair
+- Total smoke examples: 22,000
+- Classes: 11
+- SNR values: -20 to 18 dB in 2 dB steps
+
+Commands:
+
+```bash
+.venv/bin/python scripts/prepare_radioml2016_npz.py --input data/radioml/RML2016.10a_dict.pkl --out data/radioml/radioml2016_10a_clean_smoke.npz --max-examples-per-mod-snr 100
+.venv/bin/python scripts/add_stress_conditions_to_npz.py --input data/radioml/radioml2016_10a_clean_smoke.npz --out data/radioml/radioml2016_10a_stress_smoke.npz
+.venv/bin/python scripts/train_pilot_classifiers.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_classical --max-train-examples 6000 --max-test-examples 2200
+.venv/bin/python scripts/train_cnn_iq_baseline.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_cnn --epochs 5 --batch-size 256 --max-train-examples 6000 --max-test-examples 2200
+.venv/bin/python scripts/train_quantum_inspired_kernel.py --data data/radioml/radioml2016_10a_stress_smoke.npz --out results/radioml2016_smoke_quantum_kernel --qubits 5 --max-train-per-class 50 --max-test-per-class 30
+.venv/bin/python scripts/aggregate_radioml_smoke_analysis.py
+```
+
+Clean smoke performance:
+
+| Model | Examples | Accuracy | Macro F1 |
+| --- | ---: | ---: | ---: |
+| RBF-SVM | 2200 | 0.4555 | 0.4700 |
+| Random Forest | 2200 | 0.4523 | 0.4603 |
+| Logistic Regression | 2200 | 0.4300 | 0.4293 |
+| Raw-IQ CNN | 2200 | 0.3214 | 0.2698 |
+| Simulated QFM-Kernel SVM | 330 | 0.3000 | 0.2850 |
+
+Interpretation:
+
+The RadioML smoke run proves the public-benchmark workflow is connected and
+reproducible. The CNN result is intentionally under-trained because it used
+only five local CPU epochs. Final RadioML claims should be produced with a
+longer GPU run, likely on RunPod, and should be reported separately from the
+synthetic controlled-stress results.

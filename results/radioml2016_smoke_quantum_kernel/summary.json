@@ -1,0 +1,31 @@
+{
+  "dataset": "data/radioml/radioml2016_10a_stress_smoke.npz",
+  "modulations": [
+    "8PSK",
+    "AM-DSB",
+    "AM-SSB",
+    "BPSK",
+    "CPFSK",
+    "GFSK",
+    "PAM4",
+    "QAM16",
+    "QAM64",
+    "QPSK",
+    "WBFM"
+  ],
+  "stress_conditions": [
+    "clean",
+    "low_snr",
+    "narrowband_jam",
+    "broadband_jam",
+    "frequency_offset",
+    "multipath",
+    "impulsive_noise"
+  ],
+  "qubits": 5,
+  "train_examples": 550,
+  "test_examples_per_condition": 330,
+  "entangle_strength": 0.35,
+  "clean_accuracy": 0.3,
+  "clean_macro_f1": 0.2849870643924095
+}

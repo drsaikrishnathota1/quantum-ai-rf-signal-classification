@@ -21,7 +21,40 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data", type=Path, default=Path("data/pilot_iq.npz"))
     parser.add_argument("--out", type=Path, default=Path("results/pilot"))
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument(
+        "--models",
+        nargs="+",
+        choices=["logistic_regression", "random_forest", "rbf_svm"],
+        default=["logistic_regression", "random_forest", "rbf_svm"],
+    )
+    parser.add_argument("--max-train-examples", type=int, default=0)
+    parser.add_argument("--max-test-examples", type=int, default=0)
     return parser.parse_args()
+
+
+def stratified_limit_indices(
+    indices: np.ndarray,
+    y: np.ndarray,
+    max_examples: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    if max_examples <= 0 or len(indices) <= max_examples:
+        return indices
+    classes = np.unique(y[indices])
+    per_class = max(1, max_examples // len(classes))
+    selected = []
+    for cls in classes:
+        cls_idx = indices[y[indices] == cls]
+        take = min(per_class, len(cls_idx))
+        selected.extend(rng.choice(cls_idx, size=take, replace=False).tolist())
+    selected = np.asarray(selected, dtype=np.int64)
+    if len(selected) < max_examples:
+        remaining = np.setdiff1d(indices, selected, assume_unique=False)
+        extra_count = min(max_examples - len(selected), len(remaining))
+        if extra_count > 0:
+            selected = np.concatenate([selected, rng.choice(remaining, size=extra_count, replace=False)])
+    rng.shuffle(selected)
+    return selected
 
 
 def iq_to_complex(x: np.ndarray) -> np.ndarray:
@@ -68,6 +101,7 @@ def evaluate(model_name: str, model, x: np.ndarray, y: np.ndarray, condition: st
     return {
         "model": model_name,
         "condition": condition,
+        "examples": int(len(y)),
         "accuracy": float(accuracy_score(y, pred)),
         "macro_f1": float(f1_score(y, pred, average="macro")),
     }
@@ -76,6 +110,7 @@ def evaluate(model_name: str, model, x: np.ndarray, y: np.ndarray, condition: st
 def main() -> None:
     args = parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(args.seed)
     data = np.load(args.data, allow_pickle=True)
     x = data["X"]
     y = data["y"]
@@ -91,6 +126,8 @@ def main() -> None:
         random_state=args.seed,
         stratify=y,
     )
+    train_idx = stratified_limit_indices(train_idx, y, args.max_train_examples, rng)
+    test_idx = stratified_limit_indices(test_idx, y, args.max_test_examples, rng)
     x_train, x_test = x_feat[train_idx], x_feat[test_idx]
     y_train, y_test = y[train_idx], y[test_idx]
 
@@ -115,6 +152,8 @@ def main() -> None:
         ),
     }
 
+    models = {name: model for name, model in models.items() if name in set(args.models)}
+
     records = []
     snr_records = []
     for model_name, model in models.items():
@@ -124,6 +163,7 @@ def main() -> None:
             {
                 "model": model_name,
                 "condition": "heldout_clean",
+                "examples": int(len(y_test)),
                 "accuracy": float(accuracy_score(y_test, clean_pred)),
                 "macro_f1": float(f1_score(y_test, clean_pred, average="macro")),
             }
@@ -181,6 +221,8 @@ def main() -> None:
     summary = {
         "dataset": str(args.data),
         "num_examples": int(len(y)),
+        "train_examples": int(len(train_idx)),
+        "test_examples": int(len(test_idx)),
         "num_classes": int(len(modulations)),
         "modulations": modulations,
         "stress_conditions": stress_conditions,

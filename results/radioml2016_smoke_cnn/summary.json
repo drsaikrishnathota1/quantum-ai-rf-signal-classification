@@ -1,0 +1,23 @@
+{
+  "dataset": "data/radioml/radioml2016_10a_stress_smoke.npz",
+  "epochs": 5,
+  "batch_size": 256,
+  "device": "cpu",
+  "train_examples": 6000,
+  "test_examples": 2200,
+  "modulations": [
+    "8PSK",
+    "AM-DSB",
+    "AM-SSB",
+    "BPSK",
+    "CPFSK",
+    "GFSK",
+    "PAM4",
+    "QAM16",
+    "QAM64",
+    "QPSK",
+    "WBFM"
+  ],
+  "clean_accuracy": 0.32136363636363635,
+  "clean_macro_f1": 0.26976378514565985
+}
