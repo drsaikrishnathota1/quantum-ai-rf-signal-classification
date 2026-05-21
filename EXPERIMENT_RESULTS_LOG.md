@@ -61,3 +61,64 @@ Important limitation:
 This is only a sanity-test pilot. It is not paper-grade evidence yet. The next
 step is to scale the synthetic dataset and add a public RadioML benchmark.
 
+## 2026-05-21 Scaled Synthetic Held-Out Analysis
+
+Purpose:
+
+Run a larger synthetic RF experiment with corrected held-out split logic. The
+stress-condition evaluation now uses the same held-out test indices as clean
+evaluation, avoiding optimistic full-dataset scoring.
+
+Commands:
+
+```bash
+.venv/bin/python scripts/generate_synthetic_iq_dataset.py --samples-per-class 500 --out data/synthetic_iq_500.npz
+.venv/bin/python scripts/train_pilot_classifiers.py --data data/synthetic_iq_500.npz --out results/synthetic_500
+.venv/bin/python scripts/train_quantum_inspired_kernel.py --data data/synthetic_iq_500.npz --out results/quantum_kernel_500 --qubits 5 --max-train-per-class 90 --max-test-per-class 60
+.venv/bin/python scripts/aggregate_synthetic_analysis.py
+```
+
+Dataset:
+
+- Synthetic IQ signals
+- 8 modulation classes
+- 500 samples per class
+- 4,000 total examples
+- IQ length: 128
+
+Clean held-out performance:
+
+| Model | Accuracy | Macro F1 |
+| --- | ---: | ---: |
+| Random Forest | 0.5670 | 0.5650 |
+| RBF-SVM | 0.5440 | 0.5459 |
+| Logistic Regression | 0.5430 | 0.5414 |
+| Simulated QFM-Kernel SVM | 0.4229 | 0.4224 |
+
+Worst observed drops:
+
+| Model | Stress condition | Accuracy | Accuracy drop % |
+| --- | --- | ---: | ---: |
+| Simulated QFM-Kernel SVM | low_snr | 0.1562 | 63.05 |
+| Random Forest | narrowband_jam | 0.2140 | 62.26 |
+| RBF-SVM | narrowband_jam | 0.2380 | 56.25 |
+| Logistic Regression | impulsive_noise | 0.2530 | 53.41 |
+
+Interpretation:
+
+The scaled held-out pilot supports the paper's central engineering premise:
+nominal RF classification accuracy is not enough. Low SNR, narrowband jamming,
+and impulsive noise produce large performance degradation across classical and
+quantum-inspired baselines. The simulated quantum feature-map kernel is weaker
+than the best classical models in this first run, so the paper should avoid
+quantum-advantage claims and instead position the quantum component as an
+evaluated compact feature-map baseline.
+
+Generated paper assets:
+
+- `ANALYSIS_REPORT_SYNTHETIC_500.md`
+- `manuscript_assets/tables/table_synthetic_clean_performance.csv`
+- `manuscript_assets/tables/table_synthetic_robustness_metrics.csv`
+- `manuscript_assets/tables/table_synthetic_robustness_drop.csv`
+- `manuscript_assets/figures/fig_synthetic_clean_accuracy.png`
+- `manuscript_assets/figures/fig_synthetic_robustness_drop_heatmap.png`

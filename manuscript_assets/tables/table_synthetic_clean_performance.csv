@@ -1,0 +1,5 @@
+model,model_label,accuracy,macro_f1
+random_forest,Random Forest,0.567,0.5650026224342656
+rbf_svm,RBF-SVM,0.544,0.5458910311645749
+logistic_regression,Logistic Regression,0.543,0.5414433241661001
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,0.4229166666666666,0.422354754311052

@@ -83,13 +83,15 @@ def main() -> None:
     stress_conditions = [str(v) for v in data["stress_conditions"]]
 
     x_feat = extract_features(x)
-    x_train, x_test, y_train, y_test = train_test_split(
-        x_feat,
-        y,
+    indices = np.arange(len(y))
+    train_idx, test_idx = train_test_split(
+        indices,
         test_size=0.25,
         random_state=args.seed,
         stratify=y,
     )
+    x_train, x_test = x_feat[train_idx], x_feat[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
 
     models = {
         "logistic_regression": Pipeline(
@@ -131,8 +133,8 @@ def main() -> None:
                 evaluate(
                     model_name,
                     model,
-                    data[f"X_{condition}"],
-                    data[f"y_{condition}"],
+                    data[f"X_{condition}"][test_idx],
+                    data[f"y_{condition}"][test_idx],
                     condition,
                 )
             )
