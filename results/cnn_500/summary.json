@@ -1,0 +1,17 @@
+{
+  "dataset": "data/synthetic_iq_500.npz",
+  "epochs": 18,
+  "batch_size": 128,
+  "modulations": [
+    "BPSK",
+    "QPSK",
+    "8PSK",
+    "QAM16",
+    "QAM64",
+    "BFSK",
+    "AM-DSB",
+    "FM"
+  ],
+  "clean_accuracy": 0.545,
+  "clean_macro_f1": 0.46332224873976047
+}

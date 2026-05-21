@@ -9,61 +9,55 @@ The project has started successfully. We now have:
 - RunPod plan
 - synthetic RF/IQ dataset generator
 - pilot classical classifiers
+- raw-IQ CNN baseline
+- simulated quantum feature-map kernel baseline
 - pilot robustness evaluation
-- first local result tables and figures
+- scaled synthetic result tables and figures
+- draft submission/manual files
+- draft manuscript sections
 
-## Next Step 1: Scale Synthetic Pilot
+## Next Step 1: Public Benchmark Validation
 
-Run a larger synthetic dataset locally or on RunPod:
+Download RadioML2016.10A from the original provider and place it under:
 
-```bash
-.venv/bin/python scripts/generate_synthetic_iq_dataset.py --samples-per-class 1000 --out data/synthetic_iq_1k.npz
-.venv/bin/python scripts/train_pilot_classifiers.py --data data/synthetic_iq_1k.npz --out results/synthetic_1k
-.venv/bin/python scripts/make_pilot_figures.py --metrics results/synthetic_1k/pilot_metrics.csv --drops results/synthetic_1k/pilot_robustness_drop.csv --out results/synthetic_1k/figures
+```text
+data/radioml/
 ```
 
-Expected local runtime:
+Do not commit or redistribute the dataset. We should cite the original source
+and license terms in the manuscript.
 
-- 5-20 minutes depending on Mac load.
+## Next Step 2: Paper-Grade Synthetic Scale
 
-## Next Step 2: Add CNN Baseline
+On RunPod or another GPU server:
 
-Create a PyTorch 1D CNN trained on raw IQ samples.
+```bash
+python scripts/run_synthetic_pipeline.py \
+  --samples-per-class 2000 \
+  --data data/synthetic_iq_2k.npz \
+  --classical-out results/synthetic_2k \
+  --cnn-out results/cnn_2k \
+  --quantum-out results/quantum_kernel_2k \
+  --cnn-epochs 40 \
+  --cnn-batch-size 512
+```
 
-Outputs:
+## Next Step 3: Improve Quantum-Inspired Evidence
 
-- clean accuracy
-- accuracy by SNR
-- robustness under jamming/noise/frequency-offset/multipath
-- confusion matrix
+Current quantum-inspired evidence is useful but weaker than the classical and
+CNN baselines. Next options:
 
-## Next Step 3: Add Quantum-Inspired Baseline
-
-Start with a compact feature vector from the classical script.
-
-Quantum-inspired candidates:
-
-- RBF-SVM as classical kernel baseline
-- quantum-kernel SVM using Qiskit Aer simulator
-- variational classifier only on a small reduced subset if simulation cost is high
+- compare multiple feature-map depths
+- compare qubit counts from 4 to 8
+- add a classical-kernel ablation using the same PCA-reduced features
+- optionally add Qiskit Aer/QSVC if runtime is acceptable
 
 Important wording:
 
 The paper should say "quantum-inspired" or "simulated quantum-kernel baseline."
 Do not claim quantum advantage.
 
-## Next Step 4: Public Benchmark
-
-Add RadioML2016.10A first.
-
-We need to download the dataset from DeepSig. If the download requires a login
-or form, Dr. Sai must complete that step, then place the dataset in:
-
-```text
-data/radioml/
-```
-
-## Next Step 5: Paper Assets
+## Next Step 4: Final Paper Assets
 
 After full experiments:
 
@@ -77,4 +71,3 @@ After full experiments:
 - Figure 3: accuracy vs SNR
 - Figure 4: robustness drop
 - Figure 5: confusion matrix
-

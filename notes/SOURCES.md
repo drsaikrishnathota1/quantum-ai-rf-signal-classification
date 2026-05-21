@@ -7,6 +7,8 @@ later in the manuscript.
 
 - Results in Engineering, Elsevier / ScienceDirect:
   https://www.sciencedirect.com/journal/results-in-engineering
+- Guide for Authors:
+  https://www.sciencedirect.com/journal/results-in-engineering/publish/guide-for-authors
 
 Key fit notes from the journal page:
 
@@ -14,6 +16,10 @@ Key fit notes from the journal page:
 - Requires an engineering problem, system, or process.
 - Requires novelty beyond only re-applying a known AI algorithm.
 - Open access APC listed on the ScienceDirect page.
+- As checked on 2026-05-21, the ScienceDirect page lists Results in
+  Engineering as a fully open-access Elsevier journal. Verify APC and formatting
+  details again immediately before submission because journal fees and guidance
+  can change.
 
 ## Dataset
 
@@ -35,4 +41,3 @@ Use for:
 
 - QSVC / quantum-kernel style baseline
 - Compact feature-map experiments
-

@@ -1,0 +1,7 @@
+condition,model,model_label,accuracy,macro_f1
+broadband_jam,iq_cnn,Raw-IQ CNN,0.438,0.3725213722894425
+frequency_offset,logistic_regression,Logistic Regression,0.471,0.4787256419027839
+impulsive_noise,iq_cnn,Raw-IQ CNN,0.443,0.415559088665455
+low_snr,iq_cnn,Raw-IQ CNN,0.388,0.3236809655854106
+multipath,iq_cnn,Raw-IQ CNN,0.5,0.4646054892459412
+narrowband_jam,logistic_regression,Logistic Regression,0.263,0.1950429757053615

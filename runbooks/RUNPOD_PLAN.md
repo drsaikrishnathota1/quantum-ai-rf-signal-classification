@@ -41,11 +41,10 @@ pip install pennylane xgboost lightgbm
 
 ```bash
 cd /workspace
-git clone <REPO_URL_IF_CREATED> quantum_ai_rf_signal_classification
-cd quantum_ai_rf_signal_classification
+git clone https://github.com/drsaikrishnathota1/quantum-ai-rf-signal-classification.git
+cd quantum-ai-rf-signal-classification
 pip install -r requirements.txt
-python scripts/generate_synthetic_iq_dataset.py --samples-per-class 1000 --out data/synthetic_iq_1k.npz
-python scripts/train_pilot_classifiers.py --data data/synthetic_iq_1k.npz --out results/pilot_1k
+python scripts/run_synthetic_pipeline.py --samples-per-class 500 --cnn-epochs 18
 ```
 
 ## Full Paper Workflow
@@ -60,3 +59,17 @@ python scripts/train_pilot_classifiers.py --data data/synthetic_iq_1k.npz --out 
 8. Export CSV tables and figures.
 9. Generate manuscript package.
 
+## Current One-Command Pipeline
+
+For a stronger synthetic run on H100:
+
+```bash
+python scripts/run_synthetic_pipeline.py \
+  --samples-per-class 2000 \
+  --data data/synthetic_iq_2k.npz \
+  --classical-out results/synthetic_2k \
+  --cnn-out results/cnn_2k \
+  --quantum-out results/quantum_kernel_2k \
+  --cnn-epochs 40 \
+  --cnn-batch-size 512
+```

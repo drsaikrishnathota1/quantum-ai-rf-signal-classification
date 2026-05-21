@@ -12,6 +12,7 @@ MODEL_LABELS = {
     "random_forest": "Random Forest",
     "rbf_svm": "RBF-SVM",
     "simulated_quantum_feature_kernel_svm": "Simulated QFM-Kernel SVM",
+    "iq_cnn": "Raw-IQ CNN",
 }
 
 
@@ -21,6 +22,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--classical-drops", type=Path, default=Path("results/synthetic_500/pilot_robustness_drop.csv"))
     parser.add_argument("--quantum", type=Path, default=Path("results/quantum_kernel_500/quantum_kernel_metrics.csv"))
     parser.add_argument("--quantum-drops", type=Path, default=Path("results/quantum_kernel_500/quantum_kernel_robustness_drop.csv"))
+    parser.add_argument("--cnn", type=Path, default=Path("results/cnn_500/cnn_metrics.csv"))
+    parser.add_argument("--cnn-drops", type=Path, default=Path("results/cnn_500/cnn_robustness_drop.csv"))
+    parser.add_argument("--classical-snr", type=Path, default=Path("results/synthetic_500/accuracy_by_snr.csv"))
+    parser.add_argument("--cnn-snr", type=Path, default=Path("results/cnn_500/cnn_accuracy_by_snr.csv"))
     parser.add_argument("--tables-out", type=Path, default=Path("manuscript_assets/tables"))
     parser.add_argument("--figures-out", type=Path, default=Path("manuscript_assets/figures"))
     parser.add_argument("--report-out", type=Path, default=Path("ANALYSIS_REPORT_SYNTHETIC_500.md"))
@@ -109,6 +114,61 @@ def draw_drop_heatmap(drops: pd.DataFrame, out: Path) -> None:
     img.save(out, dpi=(300, 300))
 
 
+def draw_snr_lines(snr_df: pd.DataFrame, out: Path) -> None:
+    width, height = 1600, 950
+    left, right, top, bottom = 160, 80, 110, 190
+    plot_w = width - left - right
+    plot_h = height - top - bottom
+    img = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(img)
+    title_font = font(42, True)
+    axis_font = font(25)
+    label_font = font(22)
+    draw.text((width // 2, 60), "Clean Test Accuracy By SNR", fill="#111111", font=title_font, anchor="mm")
+
+    snr_values = sorted(snr_df["snr_db"].unique())
+    min_snr, max_snr = min(snr_values), max(snr_values)
+    y_max = 1.0
+
+    x0, y0 = left, top + plot_h
+    draw.line((x0, top, x0, y0), fill="#333333", width=3)
+    draw.line((x0, y0, x0 + plot_w, y0), fill="#333333", width=3)
+
+    for i in range(6):
+        val = i / 5
+        y = y0 - val * plot_h / y_max
+        draw.line((x0 - 8, y, x0 + plot_w, y), fill="#E8E8E8", width=1)
+        draw.text((x0 - 18, y), f"{val:.1f}", fill="#333333", font=axis_font, anchor="rm")
+
+    for snr in snr_values:
+        x = x0 + (snr - min_snr) / (max_snr - min_snr) * plot_w
+        draw.line((x, y0, x, y0 + 8), fill="#333333", width=2)
+        draw.text((x, y0 + 24), f"{snr:g}", fill="#333333", font=axis_font, anchor="mt")
+
+    palette = ["#2E74B5", "#70AD47", "#C55A11", "#8064A2", "#C00000"]
+    for idx, (model, rows) in enumerate(snr_df.groupby("model_label")):
+        rows = rows.sort_values("snr_db")
+        points = []
+        for _, row in rows.iterrows():
+            x = x0 + (row["snr_db"] - min_snr) / (max_snr - min_snr) * plot_w
+            y = y0 - row["accuracy"] * plot_h / y_max
+            points.append((x, y))
+        color = palette[idx % len(palette)]
+        if len(points) > 1:
+            draw.line(points, fill=color, width=4)
+        for point in points:
+            x, y = point
+            draw.ellipse((x - 7, y - 7, x + 7, y + 7), fill=color)
+        legend_x = left + idx * 310
+        legend_y = height - 78
+        draw.line((legend_x, legend_y, legend_x + 42, legend_y), fill=color, width=5)
+        draw.text((legend_x + 52, legend_y), model, fill="#111111", font=label_font, anchor="lm")
+
+    draw.text((left + plot_w / 2, height - 32), "SNR (dB)", fill="#111111", font=axis_font, anchor="mm")
+    draw.text((70, top + plot_h / 2), "Accuracy", fill="#111111", font=axis_font, anchor="mm")
+    img.save(out, dpi=(300, 300))
+
+
 def to_markdown_simple(df: pd.DataFrame) -> str:
     cols = list(df.columns)
     lines = [
@@ -132,16 +192,14 @@ def main() -> None:
     args.tables_out.mkdir(parents=True, exist_ok=True)
     args.figures_out.mkdir(parents=True, exist_ok=True)
 
-    metrics = pd.concat(
-        [pd.read_csv(args.classical), pd.read_csv(args.quantum)],
-        ignore_index=True,
-        sort=False,
-    )
-    drops = pd.concat(
-        [pd.read_csv(args.classical_drops), pd.read_csv(args.quantum_drops)],
-        ignore_index=True,
-        sort=False,
-    )
+    metric_frames = [pd.read_csv(args.classical), pd.read_csv(args.quantum)]
+    drop_frames = [pd.read_csv(args.classical_drops), pd.read_csv(args.quantum_drops)]
+    if args.cnn.exists():
+        metric_frames.append(pd.read_csv(args.cnn))
+    if args.cnn_drops.exists():
+        drop_frames.append(pd.read_csv(args.cnn_drops))
+    metrics = pd.concat(metric_frames, ignore_index=True, sort=False)
+    drops = pd.concat(drop_frames, ignore_index=True, sort=False)
     metrics["model_label"] = metrics["model"].map(MODEL_LABELS).fillna(metrics["model"])
     drops["model_label"] = drops["model"].map(MODEL_LABELS).fillna(drops["model"])
 
@@ -156,8 +214,59 @@ def main() -> None:
     drops = drops[["model", "model_label", "condition", "accuracy", "accuracy_drop_pct", "macro_f1", "macro_f1_drop_pct"]]
     drops.to_csv(args.tables_out / "table_synthetic_robustness_drop.csv", index=False)
 
+    model_summary = (
+        drops.groupby(["model", "model_label"])
+        .agg(
+            mean_stress_accuracy=("accuracy", "mean"),
+            mean_accuracy_drop_pct=("accuracy_drop_pct", "mean"),
+            worst_accuracy_drop_pct=("accuracy_drop_pct", "max"),
+            mean_stress_macro_f1=("macro_f1", "mean"),
+            mean_macro_f1_drop_pct=("macro_f1_drop_pct", "mean"),
+        )
+        .reset_index()
+        .sort_values(["mean_accuracy_drop_pct", "mean_stress_accuracy"], ascending=[True, False])
+    )
+    worst_lookup = drops.loc[drops.groupby("model")["accuracy_drop_pct"].idxmax()]
+    model_summary = model_summary.merge(
+        worst_lookup[["model", "condition"]].rename(columns={"condition": "worst_condition"}),
+        on="model",
+        how="left",
+    )
+    model_summary.to_csv(args.tables_out / "table_synthetic_model_robustness_summary.csv", index=False)
+
+    best_by_condition = (
+        robustness.sort_values(["condition", "accuracy"], ascending=[True, False])
+        .groupby("condition")
+        .head(1)
+        [["condition", "model", "model_label", "accuracy", "macro_f1"]]
+        .sort_values("condition")
+    )
+    best_by_condition.to_csv(args.tables_out / "table_synthetic_best_model_by_condition.csv", index=False)
+
     draw_clean_bar(clean, args.figures_out / "fig_synthetic_clean_accuracy.png")
     draw_drop_heatmap(drops, args.figures_out / "fig_synthetic_robustness_drop_heatmap.png")
+
+    snr_frames = []
+    if args.classical_snr.exists():
+        snr_frames.append(pd.read_csv(args.classical_snr))
+    if args.cnn_snr.exists():
+        cnn_snr = pd.read_csv(args.cnn_snr)
+        if "model" not in cnn_snr.columns:
+            cnn_snr["model"] = "iq_cnn"
+        snr_frames.append(cnn_snr)
+    snr_section: list[str] = []
+    if snr_frames:
+        snr_df = pd.concat(snr_frames, ignore_index=True, sort=False)
+        snr_df["model_label"] = snr_df["model"].map(MODEL_LABELS).fillna(snr_df["model"])
+        snr_df = snr_df[["model", "model_label", "snr_db", "examples", "accuracy", "macro_f1"]]
+        snr_df.to_csv(args.tables_out / "table_synthetic_accuracy_by_snr.csv", index=False)
+        draw_snr_lines(snr_df, args.figures_out / "fig_synthetic_accuracy_by_snr.png")
+        snr_section = [
+            "## Accuracy By SNR",
+            "",
+            to_markdown_simple(snr_df[["model_label", "snr_db", "accuracy", "macro_f1"]]),
+            "",
+        ]
 
     worst = drops.sort_values("accuracy_drop_pct", ascending=False).head(8)
     report = [
@@ -169,19 +278,40 @@ def main() -> None:
         "",
         to_markdown_simple(clean),
         "",
+        *snr_section,
         "## Worst Robustness Drops",
         "",
         to_markdown_simple(worst[["model_label", "condition", "accuracy", "accuracy_drop_pct", "macro_f1_drop_pct"]]),
         "",
+        "## Model Robustness Summary",
+        "",
+        to_markdown_simple(
+            model_summary[
+                [
+                    "model_label",
+                    "mean_stress_accuracy",
+                    "mean_accuracy_drop_pct",
+                    "worst_accuracy_drop_pct",
+                    "worst_condition",
+                ]
+            ]
+        ),
+        "",
+        "## Best Model By Stress Condition",
+        "",
+        to_markdown_simple(best_by_condition[["condition", "model_label", "accuracy", "macro_f1"]]),
+        "",
         "## Interpretation",
         "",
-        "Random Forest provided the strongest clean accuracy among the classical pilot models, "
-        "but all models showed substantial degradation under low-SNR, narrowband jamming, "
-        "broadband jamming, and impulsive-noise conditions. The simulated quantum feature-map "
-        "kernel baseline is currently weaker than the best classical model, which is important "
-        "because the manuscript should not claim quantum advantage. Instead, the result supports "
-        "a careful engineering framing: quantum-inspired feature maps can be evaluated as compact "
-        "robustness-aware modules, but they must be compared against strong classical baselines.",
+        "Random Forest provided the strongest clean accuracy among the classical pilot models. "
+        "The raw-IQ CNN had competitive clean accuracy and was comparatively stable under "
+        "multipath and impulsive-noise stress, but it was vulnerable to frequency offset and "
+        "narrowband jamming. The simulated quantum feature-map kernel baseline is currently "
+        "weaker than the best classical and CNN baselines, which is important because the "
+        "manuscript should not claim quantum advantage. Instead, the result supports a careful "
+        "engineering framing: quantum-inspired feature maps can be evaluated as compact "
+        "robustness-aware modules, but they must be compared transparently against strong "
+        "classical and deep-learning baselines.",
     ]
     args.report_out.write_text("\n".join(report) + "\n", encoding="utf-8")
     print(f"Wrote tables to {args.tables_out}")

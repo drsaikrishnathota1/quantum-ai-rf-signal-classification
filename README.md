@@ -38,13 +38,26 @@ claim is:
 
 ## First Milestone
 
-Run the local pilot:
+Run the local synthetic pipeline:
 
 ```bash
-python3 scripts/generate_synthetic_iq_dataset.py --samples-per-class 300 --out data/pilot_iq.npz
-python3 scripts/train_pilot_classifiers.py --data data/pilot_iq.npz --out results/pilot
+.venv/bin/python scripts/run_synthetic_pipeline.py --samples-per-class 500 --cnn-epochs 18
 ```
 
-The pilot is intentionally small. It proves the end-to-end flow before using
-paid GPU resources.
+The pipeline generates data, trains classical baselines, trains the raw-IQ CNN,
+runs the simulated quantum feature-map kernel, and exports manuscript-ready
+tables and figures.
 
+## Current Evidence Snapshot
+
+The current scaled synthetic pilot uses 4,000 examples across eight modulation
+classes. Clean held-out accuracy is:
+
+- Random Forest: 0.567
+- Raw-IQ CNN: 0.545
+- RBF-SVM: 0.544
+- Logistic Regression: 0.543
+- Simulated QFM-Kernel SVM: 0.423
+
+These are pilot results, not final submission claims. The next paper-grade step
+is to validate the same workflow on a public RadioML benchmark.

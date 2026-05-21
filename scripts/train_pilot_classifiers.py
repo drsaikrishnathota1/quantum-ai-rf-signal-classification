@@ -79,6 +79,7 @@ def main() -> None:
     data = np.load(args.data, allow_pickle=True)
     x = data["X"]
     y = data["y"]
+    snr_db = data["snr_db"]
     modulations = [str(v) for v in data["modulations"]]
     stress_conditions = [str(v) for v in data["stress_conditions"]]
 
@@ -115,6 +116,7 @@ def main() -> None:
     }
 
     records = []
+    snr_records = []
     for model_name, model in models.items():
         model.fit(x_train, y_train)
         clean_pred = model.predict(x_test)
@@ -127,6 +129,18 @@ def main() -> None:
             }
         )
         joblib.dump(model, args.out / f"{model_name}.joblib")
+
+        for snr in sorted(np.unique(snr_db[test_idx])):
+            mask = snr_db[test_idx] == snr
+            snr_records.append(
+                {
+                    "model": model_name,
+                    "snr_db": float(snr),
+                    "examples": int(mask.sum()),
+                    "accuracy": float(accuracy_score(y_test[mask], clean_pred[mask])),
+                    "macro_f1": float(f1_score(y_test[mask], clean_pred[mask], average="macro")),
+                }
+            )
 
         for condition in stress_conditions:
             records.append(
@@ -162,6 +176,7 @@ def main() -> None:
 
     df.to_csv(args.out / "pilot_metrics.csv", index=False)
     pd.DataFrame(drop_rows).to_csv(args.out / "pilot_robustness_drop.csv", index=False)
+    pd.DataFrame(snr_records).to_csv(args.out / "accuracy_by_snr.csv", index=False)
 
     summary = {
         "dataset": str(args.data),

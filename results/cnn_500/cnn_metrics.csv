@@ -1,0 +1,9 @@
+model,condition,examples,accuracy,macro_f1
+iq_cnn,heldout_clean,1000,0.545,0.46332224873976047
+iq_cnn,clean,1000,0.545,0.46332224873976047
+iq_cnn,low_snr,1000,0.388,0.32368096558541065
+iq_cnn,narrowband_jam,1000,0.251,0.2101492746094432
+iq_cnn,broadband_jam,1000,0.438,0.37252137228944254
+iq_cnn,frequency_offset,1000,0.23,0.13880555280721224
+iq_cnn,multipath,1000,0.5,0.46460548924594125
+iq_cnn,impulsive_noise,1000,0.443,0.415559088665455

@@ -122,3 +122,58 @@ Generated paper assets:
 - `manuscript_assets/tables/table_synthetic_robustness_drop.csv`
 - `manuscript_assets/figures/fig_synthetic_clean_accuracy.png`
 - `manuscript_assets/figures/fig_synthetic_robustness_drop_heatmap.png`
+
+## 2026-05-21 Raw-IQ CNN Baseline And Updated Synthetic Analysis
+
+Purpose:
+
+Add a deep-learning baseline trained directly on raw IQ samples, then regenerate
+the manuscript-ready tables and figures so the current analysis compares
+classical ML, CNN, and simulated quantum feature-map kernel models.
+
+Commands:
+
+```bash
+.venv/bin/python scripts/train_cnn_iq_baseline.py --data data/synthetic_iq_500.npz --out results/cnn_500 --epochs 18 --batch-size 128
+.venv/bin/python scripts/train_pilot_classifiers.py --data data/synthetic_iq_500.npz --out results/synthetic_500
+.venv/bin/python scripts/aggregate_synthetic_analysis.py
+```
+
+Clean held-out performance after adding CNN:
+
+| Model | Accuracy | Macro F1 |
+| --- | ---: | ---: |
+| Random Forest | 0.5670 | 0.5650 |
+| Raw-IQ CNN | 0.5450 | 0.4633 |
+| RBF-SVM | 0.5440 | 0.5459 |
+| Logistic Regression | 0.5430 | 0.5414 |
+| Simulated QFM-Kernel SVM | 0.4229 | 0.4224 |
+
+CNN robustness observations:
+
+| Stress condition | Accuracy | Accuracy drop % | Macro F1 |
+| --- | ---: | ---: | ---: |
+| low_snr | 0.3880 | 28.81 | 0.3237 |
+| narrowband_jam | 0.2510 | 53.94 | 0.2101 |
+| broadband_jam | 0.4380 | 19.63 | 0.3725 |
+| frequency_offset | 0.2300 | 57.80 | 0.1388 |
+| multipath | 0.5000 | 8.26 | 0.4646 |
+| impulsive_noise | 0.4430 | 18.72 | 0.4156 |
+
+Interpretation:
+
+The raw-IQ CNN is competitive with the best clean classical baselines and has
+the lowest mean accuracy drop across stress conditions in the current pilot.
+However, it has a strong failure mode under frequency offset and narrowband
+jamming. This is useful for the manuscript because it supports a nuanced
+robustness argument instead of a simple clean-accuracy ranking.
+
+New generated assets:
+
+- `results/cnn_500/cnn_metrics.csv`
+- `results/cnn_500/cnn_robustness_drop.csv`
+- `results/cnn_500/cnn_training_history.csv`
+- `results/cnn_500/cnn_accuracy_by_snr.csv`
+- `results/synthetic_500/accuracy_by_snr.csv`
+- `manuscript_assets/tables/table_synthetic_model_robustness_summary.csv`
+- `manuscript_assets/tables/table_synthetic_best_model_by_condition.csv`

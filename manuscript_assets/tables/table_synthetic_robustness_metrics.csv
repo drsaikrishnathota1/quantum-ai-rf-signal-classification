@@ -23,3 +23,9 @@ simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,broadband_jam,0.25
 simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,frequency_offset,0.3333333333333333,0.3177882876902636
 simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,multipath,0.3208333333333333,0.2987882199857186
 simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,impulsive_noise,0.2083333333333333,0.1542355324995699
+iq_cnn,Raw-IQ CNN,low_snr,0.388,0.3236809655854106
+iq_cnn,Raw-IQ CNN,narrowband_jam,0.251,0.2101492746094432
+iq_cnn,Raw-IQ CNN,broadband_jam,0.438,0.3725213722894425
+iq_cnn,Raw-IQ CNN,frequency_offset,0.23,0.1388055528072122
+iq_cnn,Raw-IQ CNN,multipath,0.5,0.4646054892459412
+iq_cnn,Raw-IQ CNN,impulsive_noise,0.443,0.415559088665455
