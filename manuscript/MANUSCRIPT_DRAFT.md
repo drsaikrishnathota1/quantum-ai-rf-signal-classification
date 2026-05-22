@@ -44,27 +44,32 @@ Automatic modulation classification (AMC) aims to identify the modulation type
 of an unknown received signal without requiring full transmitter-side
 metadata. It is a long-standing problem in signal processing and is relevant to
 adaptive communications, cognitive radio, interference monitoring, spectrum
-management, and RF surveillance. Classical AMC work relied heavily on
+management, and RF surveillance. Recent AMC surveys still identify
 likelihood-based methods, higher-order statistics, cumulants, cyclostationary
-features, and engineered time/frequency-domain descriptors [1, 2]. More recent
-work has shown that deep neural networks can learn useful representations
-directly from raw IQ samples or derived signal representations [3-13, 26-34].
+features, and engineered time/frequency-domain descriptors as important
+classical baselines, while also showing the rapid movement toward learned IQ
+representations [1, 2]. Recent deep-learning work has shown that neural
+networks can learn useful representations directly from raw IQ samples or
+derived signal representations [3-32].
 
 Despite this progress, a gap remains between clean benchmark performance and
 operational robustness. Practical receivers may observe signals distorted by
 low SNR, frequency offset, fading, multipath, impulsive interference, and
 intentional jamming. Deep RF classifiers are also known to be vulnerable to
-adversarial perturbations and over-the-air attack settings [15-20]. For this
+adversarial perturbations, adversarial RF examples, and channel-aware attack
+settings [19, 31, 32, 36, 37]. For this
 reason, nominal clean accuracy is not sufficient for an engineering assessment
 of RF classifiers intended for degraded or contested spectrum environments.
 
 Quantum and quantum-inspired machine-learning methods have also attracted
 attention because quantum feature maps can be interpreted as high-dimensional
-kernel embeddings [21-25]. However, quantum advantage in practical
-classical-data classification problems is not automatic. Recent analyses show
-that classical models can remain competitive when enough data are available,
-and that quantum-kernel methods must be assessed against strong classical
-kernel baselines rather than weaker straw-man comparators [23-25].
+kernel embeddings and because quantum processors have begun to be explored for
+analog RF/microwave signal classification [33-38]. However, quantum advantage
+in practical classical-data classification problems is not automatic. Recent
+analyses show that classical models can remain competitive when enough data are
+available, and that quantum-kernel methods must be assessed against strong
+classical kernel baselines rather than weaker straw-man comparators [33, 34,
+36, 38].
 
 This paper therefore does not present a new state-of-the-art AMC architecture
 or claim quantum advantage. Instead, it addresses a narrower but important
@@ -83,30 +88,31 @@ reporting on both synthetic IQ data and RadioML2016.10A.
 
 ### 2.1 Classical AMC and benchmark evolution
 
-Classical AMC surveys established the two main families of modulation
-recognition methods: likelihood-based approaches and feature-based approaches
-[1]. Likelihood-based methods can approach optimality under well-specified
+Recent AMC surveys organize modulation-recognition methods into classical
+likelihood/feature-based approaches and learned deep architectures [1, 2].
+Likelihood-based methods can approach optimality under well-specified
 models, but they are often computationally expensive and sensitive to
 assumptions about channel state, timing, phase, and SNR. Feature-based methods
 reduce complexity by using signal statistics, cumulants, instantaneous
 amplitude/phase features, and spectral features, but their performance depends
 on feature design and channel assumptions [1, 2].
 
-The RadioML family of datasets helped standardize deep-learning evaluation for
-radio signal classification [3-5]. RadioML2016.10A remains widely used because
-it provides labeled IQ sequences across multiple modulation types and SNR
-levels. Later works extended the benchmark setting with deeper architectures,
-larger datasets, distributed sensors, multistream fusion,
-resource-constrained models, attention mechanisms, transformer blocks, and
-joint signal-detection/classification settings [5-13, 26-34].
+The RadioML family of datasets remains a common public benchmark family in
+recent AMC research because it provides labeled IQ sequences across multiple
+modulation types and SNR levels [3-32]. Later works extended
+the benchmark setting with deeper architectures, multistream fusion,
+resource-constrained models, attention mechanisms, transformer blocks,
+low-SNR-specific models, and joint signal-detection/classification settings
+[6-32].
 
 ### 2.2 Deep learning for RF signal classification
 
-Convolutional modulation-recognition networks demonstrated that raw IQ
-sequences can be learned directly by CNNs [3]. Deep architectures were then
+Recent convolutional modulation-recognition studies continue to show that raw
+IQ sequences can be learned directly by CNN-style models [3-5, 13, 17, 21].
+Deep architectures were then
 expanded through residual networks, CLDNN-style models, recurrent models,
 feature-fusion systems, attention mechanisms, transformer encoders, and
-multi-domain input representations [4-13, 26-34]. These works are essential
+multi-domain input representations [6-32]. These works are essential
 because they show that deep models can outperform many hand-crafted feature
 pipelines, especially at moderate and high SNR.
 
@@ -116,9 +122,9 @@ accuracy by SNR, but fewer provide a controlled comparison of clean accuracy,
 low-SNR degradation, narrowband jamming, broadband jamming, carrier-frequency
 offset, multipath, impulsive noise, ablation against a compressed-feature
 kernel, and inference latency in one reproducible workflow. Recent Results in
-Engineering work has shown that RadioML-based AMR papers are expected to
-include explicit ablations, efficiency metrics, and low-SNR robustness claims
-[31]. RSC-Bench extends this style by making the robustness matrix itself the
+Engineering work has shown that AMR papers are expected to include explicit
+ablations, efficiency metrics, and low-SNR robustness claims [16]. RSC-Bench
+extends this style by making the robustness matrix itself the
 primary contribution and by including a same-feature quantum/classical kernel
 ablation to avoid unsupported claims.
 
@@ -127,9 +133,10 @@ ablation to avoid unsupported claims.
 Robustness is central to RF machine learning because the wireless channel and
 the attacker both act directly on the received waveform. Prior studies have
 shown that deep RF classifiers can be sensitive to adversarial perturbations,
-over-the-air attacks, channel-aware attacks, and wireless jamming [15-20].
-Noise-mismatch work similarly shows that models trained under one impairment
-distribution may degrade sharply under another [14]. These studies support the
+adversarial RF examples, channel-aware attacks, and wireless jamming [19, 31,
+32, 36, 37]. Noise-mismatch and low-SNR-focused work similarly shows that models
+trained under one impairment distribution may degrade sharply under another [29,
+30]. These studies support the
 need for a stress-test protocol that reports failure modes rather than only
 clean benchmark scores.
 
@@ -142,12 +149,13 @@ and impulsive noise.
 ### 2.4 Quantum-inspired kernels for classical RF data
 
 Quantum feature maps can be viewed as nonlinear embeddings into Hilbert spaces,
-and quantum kernels can be used in a support-vector-machine framework [21,
-22]. This perspective makes quantum-inspired kernels attractive as compact
+and quantum kernels can be used in a support-vector-machine framework [33, 34,
+38].
+This perspective makes quantum-inspired kernels attractive as compact
 nonlinear classifiers for structured signal features. At the same time,
 quantum-machine-learning theory warns that advantage claims must be supported
-by careful comparisons against classical learners and classical kernels [23,
-24]. In particular, if a quantum feature map is applied to low-dimensional
+by careful comparisons against classical learners and classical kernels [33, 34,
+36, 38]. In particular, if a quantum feature map is applied to low-dimensional
 classical features, a classical RBF kernel on the same features may perform
 similarly.
 
@@ -513,37 +521,41 @@ executed, and verified the analyses, metrics, and final text.
 
 ## References
 
-1. O. A. Dobre, A. Abdi, Y. Bar-Ness, and W. Su, "Survey of automatic modulation classification techniques: Classical approaches and new trends," IET Communications, vol. 1, no. 2, pp. 137-156, 2007, doi: 10.1049/iet-com:20050176.
-2. D. Grimaldi, S. Rapuano, and L. De Vito, "An automatic digital modulation classifier for measurement on telecommunication networks," IEEE Transactions on Instrumentation and Measurement, vol. 56, no. 5, pp. 1711-1720, 2007, doi: 10.1109/TIM.2007.895675.
-3. T. J. O'Shea, J. Corgan, and T. C. Clancy, "Convolutional radio modulation recognition networks," in Engineering Applications of Neural Networks, pp. 213-226, 2016, doi: 10.1007/978-3-319-44188-7_16.
-4. N. E. West and T. J. O'Shea, "Deep architectures for modulation recognition," in 2017 IEEE International Symposium on Dynamic Spectrum Access Networks (DySPAN), pp. 1-6, 2017, doi: 10.1109/DySPAN.2017.7920754.
-5. T. J. O'Shea, T. Roy, and T. C. Clancy, "Over-the-air deep learning based radio signal classification," IEEE Journal of Selected Topics in Signal Processing, vol. 12, no. 1, pp. 168-179, 2018, doi: 10.1109/JSTSP.2018.2797022.
-6. F. Meng, P. Chen, L. Wu, and X. Wang, "Automatic modulation classification: A deep learning enabled approach," IEEE Transactions on Vehicular Technology, vol. 67, no. 11, pp. 10760-10772, 2018, doi: 10.1109/TVT.2018.2868698.
-7. S. Rajendran, W. Meert, D. Giustiniano, V. Lenders, and S. Pollin, "Deep learning models for wireless signal classification with distributed low-cost spectrum sensors," IEEE Transactions on Cognitive Communications and Networking, vol. 4, no. 3, pp. 433-445, 2018, doi: 10.1109/TCCN.2018.2835460.
-8. Y. Wang, M. Liu, J. Yang, and G. Gui, "Data-driven deep learning for automatic modulation recognition in cognitive radios," IEEE Transactions on Vehicular Technology, vol. 68, no. 4, pp. 4074-4077, 2019, doi: 10.1109/TVT.2019.2900460.
-9. P. Qi, S. Zheng, S. Chen, and X. Yang, "Fusion methods for CNN-based automatic modulation classification," IEEE Access, vol. 7, pp. 66496-66504, 2019, doi: 10.1109/ACCESS.2019.2918136.
-10. T. Huynh-The, Q. V. Pham, T. V. Nguyen, T. T. Nguyen, R. Ruby, M. Zeng, and D. S. Kim, "Automatic modulation classification: A deep architecture survey," IEEE Access, vol. 9, pp. 142950-142971, 2021, doi: 10.1109/ACCESS.2021.3120419.
-11. F. Shi, Z. Hu, C. Yue, and Z. Shen, "Combining neural networks for modulation recognition," Digital Signal Processing, vol. 120, 103264, 2022, doi: 10.1016/j.dsp.2021.103264.
-12. C. A. Harper, M. A. Thornton, and E. C. Larson, "Automatic modulation classification with deep neural networks," Electronics, vol. 12, no. 18, 3962, 2023, doi: 10.3390/electronics12183962.
-13. X. Tian et al., "A survey on deep learning enabled automatic modulation classification methods: Data representations, model structures, and regularization techniques," Signal Processing, vol. 242, 110444, 2026, doi: 10.1016/j.sigpro.2025.110444.
-14. Z. Wu, S. Zhou, Z. Yin, B. Ma, and Z. Yang, "Robust automatic modulation classification under varying noise conditions," IEEE Access, vol. 5, pp. 19733-19741, 2017, doi: 10.1109/ACCESS.2017.2746140.
-15. M. Sadeghi and E. G. Larsson, "Adversarial attacks on deep-learning based radio signal classification," IEEE Wireless Communications Letters, vol. 8, no. 1, pp. 213-216, 2019, doi: 10.1109/LWC.2018.2867459.
-16. B. Flowers, R. M. Buehrer, and W. C. Headley, "Evaluating adversarial evasion attacks in the context of wireless communications," IEEE Transactions on Information Forensics and Security, vol. 15, pp. 1102-1113, 2020, doi: 10.1109/TIFS.2019.2934069.
-17. B. Kim, Y. E. Sagduyu, K. Davaslioglu, T. Erpek, and S. Ulukus, "Over-the-air adversarial attacks on deep learning based modulation classifier over wireless channels," in 2020 54th Annual Conference on Information Sciences and Systems (CISS), pp. 1-6, 2020, doi: 10.1109/CISS48834.2020.1570617416.
-18. B. Kim, Y. E. Sagduyu, K. Davaslioglu, T. Erpek, and S. Ulukus, "Channel-aware adversarial attacks against deep learning-based wireless signal classifiers," IEEE Transactions on Wireless Communications, vol. 21, no. 6, pp. 3868-3880, 2022, doi: 10.1109/TWC.2021.3124855.
-19. T. Erpek, Y. E. Sagduyu, and Y. Shi, "Deep learning for launching and mitigating wireless jamming attacks," IEEE Transactions on Cognitive Communications and Networking, vol. 5, no. 1, pp. 2-14, 2019, doi: 10.1109/TCCN.2018.2884910.
-20. Y. Shi, Y. E. Sagduyu, T. Erpek, K. Davaslioglu, Z. Lu, and J. H. Li, "Adversarial deep learning for cognitive radio security: Jamming attack and defense strategies," in IEEE ICC Workshops, pp. 1-6, 2018, doi: 10.1109/ICCW.2018.8403655.
-21. V. Havlicek, A. D. Corcoles, K. Temme, A. W. Harrow, A. Kandala, J. M. Chow, and J. M. Gambetta, "Supervised learning with quantum-enhanced feature spaces," Nature, vol. 567, pp. 209-212, 2019, doi: 10.1038/s41586-019-0980-2.
-22. M. Schuld and N. Killoran, "Quantum machine learning in feature Hilbert spaces," Physical Review Letters, vol. 122, no. 4, 040504, 2019, doi: 10.1103/PhysRevLett.122.040504.
-23. H.-Y. Huang, M. Broughton, M. Mohseni, R. Babbush, S. Boixo, H. Neven, and J. R. McClean, "Power of data in quantum machine learning," Nature Communications, vol. 12, 2631, 2021, doi: 10.1038/s41467-021-22539-9.
-24. S. Jerbi, L. J. Fiderer, H. P. Nautrup, J. M. Kubler, H. J. Briegel, and V. Dunjko, "Quantum machine learning beyond kernel methods," Nature Communications, vol. 14, 517, 2023, doi: 10.1038/s41467-023-36159-y.
-25. J. Biamonte et al., "Quantum machine learning," Nature, vol. 549, pp. 195-202, 2017, doi: 10.1038/nature23474.
-26. T. Huynh-The, C. H. Hua, Q. V. Pham, and D. S. Kim, "MCNet: An efficient CNN architecture for robust automatic modulation classification," IEEE Communications Letters, vol. 24, no. 4, pp. 811-815, 2020, doi: 10.1109/LCOMM.2020.2968030.
-27. A. P. Hermawan, R. R. Ginanjar, D. S. Kim, and J. M. Lee, "CNN-based automatic modulation classification for beyond 5G communications," IEEE Communications Letters, vol. 24, no. 5, pp. 1038-1041, 2020, doi: 10.1109/LCOMM.2020.2970922.
-28. N. Wang, Y. Liu, L. Ma, Y. Yang, and H. Wang, "Multidimensional CNN-LSTM network for automatic modulation classification," Electronics, vol. 10, no. 14, 1649, 2021, doi: 10.3390/electronics10141649.
-29. L. Weng, Y. He, J. Peng, J. Zheng, and X. Li, "Deep cascading network architecture for robust automatic modulation classification," Neurocomputing, vol. 455, pp. 308-324, 2021, doi: 10.1016/j.neucom.2021.05.010.
-30. Z. Lyu, Y. Wang, W. Li, L. Guo, J. Yang, J. Sun, M. Liu, and G. Gui, "Robust automatic modulation classification based on convolutional and recurrent fusion network," Physical Communication, vol. 43, 101213, 2020, doi: 10.1016/j.phycom.2020.101213.
-31. N. El-Haryqy, A. Kharbouche, H. Ouamna, Z. Madini, and Y. Zouine, "Improved automatic modulation recognition using deep learning with additive attention," Results in Engineering, vol. 26, 104783, 2025, doi: 10.1016/j.rineng.2025.104783.
-32. A. Kumar, M. S. Chaudhari, and S. Majhi, "Automatic modulation classification for OFDM systems using bi-stream and attention-based CNN-LSTM model," IEEE Communications Letters, 2024, doi: 10.1109/LCOMM.2023.3348512.
-33. C. Zhao, J. Chen, X. Huang, and Z. Wu, "A cross-scale embedding based fusion transformer for automatic modulation recognition," IEEE Communications Letters, vol. 28, no. 1, pp. 68-72, 2024, doi: 10.1109/LCOMM.2023.3331265.
-34. H. Xing, X. Zhang, S. Chang, J. Ren, Z. Zhang, J. Xu, and S. Cui, "Joint signal detection and automatic modulation classification via deep learning," IEEE Transactions on Wireless Communications, vol. 23, no. 11, pp. 17129-17142, 2024, doi: 10.1109/TWC.2024.3450972.
+1. X. Tian et al., "A survey on deep learning enabled automatic modulation classification methods: Data representations, model structures, and regularization techniques," Signal Processing, vol. 242, 110444, 2026, doi: 10.1016/j.sigpro.2025.110444.
+2. Shalu and B. B. Singh, "Deep learning based algorithms for automatic modulation classification: Trends, challenges, and future directions," Engineering Applications of Artificial Intelligence, vol. 167, part 3, 113910, 2026, doi: 10.1016/j.engappai.2026.113910.
+3. C. A. Harper, M. A. Thornton, and E. C. Larson, "Automatic modulation classification with deep neural networks," Electronics, vol. 12, no. 18, 3962, 2023, doi: 10.3390/electronics12183962.
+4. Y. Wang et al., "Multi-domain fusion for automatic modulation classification using deep learning," Scientific Reports, vol. 13, 12729, 2023, doi: 10.1038/s41598-023-37165-2.
+5. W. Wang, Y. Wang, W. Wei, P. Zhang, Y. He, and H. Zhang, "A novel deep learning-based automatic modulation recognition method for MIMO systems," EURASIP Journal on Wireless Communications and Networking, vol. 2023, article 59, 2023, doi: 10.1186/s13638-023-02275-y.
+6. D. Zhang et al., "Frequency learning attention networks based on deep learning for automatic modulation classification in wireless communication," Pattern Recognition, vol. 137, 109345, 2023, doi: 10.1016/j.patcog.2023.109345.
+7. C. Zhao, J. Chen, X. Huang, and Z. Wu, "A cross-scale embedding based fusion transformer for automatic modulation recognition," IEEE Communications Letters, vol. 28, no. 1, pp. 68-72, 2024, doi: 10.1109/LCOMM.2023.3331265.
+8. A. Kumar, M. S. Chaudhari, and S. Majhi, "Automatic modulation classification for OFDM systems using bi-stream and attention-based CNN-LSTM model," IEEE Communications Letters, 2024, doi: 10.1109/LCOMM.2023.3348512.
+9. W. Ma, Z. Cai, and C. Wang, "A transformer and convolution-based learning framework for automatic modulation classification," IEEE Communications Letters, vol. 28, no. 6, pp. 1392-1396, 2024, doi: 10.1109/LCOMM.2024.3380623.
+10. Y. Wang, S. Fang, Y. Fan, M. Wang, Z. Xu, and S. Hou, "A complex-valued convolutional fusion-type multi-stream spatiotemporal network for automatic modulation classification," Scientific Reports, vol. 14, 22401, 2024, doi: 10.1038/s41598-024-73547-w.
+11. B. Liu, Q. Zheng, H. Wei, J. Zhao, H. Yu, Y. Zhou, F. Chao, and R. Ji, "Deep hybrid transformer network for robust modulation classification in wireless communications," Knowledge-Based Systems, vol. 300, 112191, 2024, doi: 10.1016/j.knosys.2024.112191.
+12. H. Xing, X. Zhang, S. Chang, J. Ren, Z. Zhang, J. Xu, and S. Cui, "Joint signal detection and automatic modulation classification via deep learning," IEEE Transactions on Wireless Communications, vol. 23, no. 11, pp. 17129-17142, 2024, doi: 10.1109/TWC.2024.3450972.
+13. M. Wang, S. Fang, Y. Fan, J. Li, Y. Zhao, and Y. Wang, "An ultra lightweight neural network for automatic modulation classification in drone communications," Scientific Reports, vol. 14, 21540, 2024, doi: 10.1038/s41598-024-72867-1.
+14. Y. Shi, H. Xu, Y. Zhang, Z. Qi, and D. Wang, "GAF-MAE: A self-supervised automatic modulation classification method based on Gramian angular field and masked autoencoder," IEEE Transactions on Cognitive Communications and Networking, vol. 10, no. 1, pp. 94-106, 2024, doi: 10.1109/TCCN.2023.3318414.
+15. N. El-Haryqy, A. Kharbouche, H. Ouamna, Z. Madini, and Y. Zouine, "Improved automatic modulation recognition using deep learning with additive attention," Results in Engineering, vol. 26, 104783, 2025, doi: 10.1016/j.rineng.2025.104783.
+16. S. Nasir, S. A. Sheikh, and F. M. Malik, "Automatic modulation classification using convolutional neural network and support vector machine," Digital Signal Processing, vol. 164, 105249, 2025, doi: 10.1016/j.dsp.2025.105249.
+17. M. Shao, D. Li, S. Hong, J. Qi, and H. Sun, "IQFormer: A novel transformer-based model with multi-modality fusion for automatic modulation recognition," IEEE Transactions on Cognitive Communications and Networking, vol. 11, no. 3, pp. 1623-1634, 2025, doi: 10.1109/TCCN.2024.3485118.
+18. H. Ouamna, A. Kharbouche, N. El-Haryqy, Z. Madini, and Y. Zouine, "Performance analysis of a hybrid complex-valued CNN-TCN model for automatic modulation recognition in wireless communication systems," Applied System Innovation, vol. 8, no. 4, 90, 2025, doi: 10.3390/asi8040090.
+19. T. Wei, Y. Liu, and Y. Ning, "Adversarial sample generation method for modulated signals based on edge-linear combination," Electronics, vol. 14, no. 7, 1260, 2025, doi: 10.3390/electronics14071260.
+20. W. Wang, X. Zou, Z. Pan, and H. Zhao, "Complex-valued hybrid deep learning models for automatic modulation recognition," EURASIP Journal on Advances in Signal Processing, vol. 2025, article 46, 2025, doi: 10.1186/s13634-025-01254-3.
+21. M. Zhang, J. Ma, Z. Zhang, and F. Zhou, "FedeAMR-CFF: A federated automatic modulation recognition method based on characteristic feature fine-tuning," Sensors, vol. 25, no. 13, 4000, 2025, doi: 10.3390/s25134000.
+22. Y. Li, X. Tang, L. Wang, and H. Xing, "A novel automatic modulation recognition algorithm for OFDM signals based on FAFT," Scientific Reports, vol. 16, 9614, 2026, doi: 10.1038/s41598-025-33752-7.
+23. P. C. Sahu et al., "Cloud-enabled automatic modulation classification using deep feature fusion and Moth-Flame Optimized ELM approach," Scientific Reports, vol. 16, 1061, 2026, doi: 10.1038/s41598-025-30753-4.
+24. R. Jabeur, A. Alaerjan, and H. Ben Chikha, "Deep residual network enhanced with multilevel residual-of-residual for automatic classification of radio signals for 5G and beyond systems," Scientific Reports, vol. 16, 7003, 2026, doi: 10.1038/s41598-026-35306-x.
+25. Y. Shi, H. Xu, Z. Qi, D. Wang, and Q. Meng, "Towards cross-domain few-shot modulation classification: A feature transformation graph neural network approach," Scientific Reports, 2026, doi: 10.1038/s41598-026-43563-z.
+26. O. B. Gemci and O. Dikmen, "SCALNet: A lightweight attention-enhanced convolutional network for robust modulation classification using constellation diagrams," Signal, Image and Video Processing, vol. 20, article 71, 2026, doi: 10.1007/s11760-026-05126-7.
+27. W. Ma, D. Zhang, C. Wang, Y. Lu, and W. Ding, "A semi-supervised multimodal fusion approach for automatic modulation classification with label scarcity," Digital Signal Processing, vol. 177, 106137, 2026, doi: 10.1016/j.dsp.2026.106137.
+28. M. H. Rahman et al., "Joint deep learning-empowered efficient automatic modulation recognition for fifth-generation-and-beyond wireless systems," Engineering Applications of Artificial Intelligence, vol. 177, part 1, 114851, 2026, doi: 10.1016/j.engappai.2026.114851.
+29. R. Wang, J. Li, Y. Yang, S. Wang, and B. Zheng, "KADNet: Low SNR automatic modulation classification via SNR aware deformable convolution and Kolmogorov-Arnold networks," Digital Signal Processing, vol. 174, 105942, 2026, doi: 10.1016/j.dsp.2026.105942.
+30. O. F. Obead, A. M. El-Assy, H. E.-D. Moustafa, and H. B. Nafea, "Powerful deep convolutional neural networks for robust automatic modulation classification using spectrograms," Journal of Engineering and Applied Science, vol. 73, article 144, 2026, doi: 10.1186/s44147-026-00997-6.
+31. H. Zhang, W. Ding, D. Zhang, J. Xiao, Z. Shao, and B. Chen, "APDMs: Adversarial purification diffusion models for automatic modulation classification," Signal Processing, vol. 239, 110249, 2026, doi: 10.1016/j.sigpro.2025.110249.
+32. D. Adesina, C.-C. Hsieh, Y. E. Sagduyu, and L. Qian, "Adversarial machine learning in wireless communications using RF data: A review," IEEE Communications Surveys & Tutorials, vol. 25, no. 1, pp. 77-100, 2023, doi: 10.1109/COMST.2022.3205184.
+33. S. Jerbi, L. J. Fiderer, H. P. Nautrup, J. M. Kubler, H. J. Briegel, and V. Dunjko, "Quantum machine learning beyond kernel methods," Nature Communications, vol. 14, 517, 2023, doi: 10.1038/s41467-023-36159-y.
+34. J. Jager and R. V. Krems, "Universal expressiveness of variational quantum classifiers and quantum kernels for support vector machines," Nature Communications, vol. 14, 576, 2023, doi: 10.1038/s41467-023-36144-5.
+35. A. Senanian, S. Prabhu, V. Kremenetski, S. Roy, Y. Cao, J. Kline, T. Onodera, L. G. Wright, X. Wu, V. Fatemi, and P. L. McMahon, "Microwave signal processing using an analog quantum reservoir computer," Nature Communications, vol. 15, 7890, 2024, doi: 10.1038/s41467-024-51161-8.
+36. N. Dowling, M. T. West, A. Southwell, et al., "Adversarial robustness guarantees for quantum classifiers," npj Quantum Information, vol. 12, 16, 2026, doi: 10.1038/s41534-025-01129-3.
+37. Y. Wu, E. Adermann, C. Thapa, S. Camtepe, H. Suzuki, and M. Usman, "Radio signal classification by adversarially robust quantum machine learning," arXiv, 2023, doi: 10.48550/arXiv.2312.07821.
+38. H.-Y. Liu and M.-H. Chen, "Quantum machine learning: A review and case studies," Entropy, vol. 25, no. 2, 287, 2023, doi: 10.3390/e25020287.
