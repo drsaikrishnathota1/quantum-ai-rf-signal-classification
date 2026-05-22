@@ -2,7 +2,7 @@
 
 ## Title
 
-Quantum-Inspired Hybrid AI for Robust RF Signal Classification in Contested Spectrum Environments
+Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments
 
 ## Author
 

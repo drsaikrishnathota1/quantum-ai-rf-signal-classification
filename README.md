@@ -2,7 +2,7 @@
 
 Working title:
 
-**Quantum-Inspired Hybrid AI for Robust RF Signal Classification in Contested Spectrum Environments**
+**Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments**
 
 Target journal:
 
@@ -22,10 +22,10 @@ offset, and impulsive noise.
 The paper will not claim quantum advantage. The safer and more defensible
 claim is:
 
-> Compact quantum-inspired feature maps and quantum-kernel style classifiers can
-> be evaluated as robustness-aware modules inside an RF signal classification
-> workflow, and compared transparently against classical ML and deep-learning
-> baselines under contested-spectrum degradations.
+> Clean RF classification accuracy is not enough for contested-spectrum model
+> selection; classical ML, raw-IQ CNN, simulated quantum-kernel, and same-feature
+> PCA-RBF ablation baselines should be compared under reproducible degraded RF
+> stress conditions.
 
 ## Evidence Path
 
@@ -38,10 +38,10 @@ claim is:
 
 ## First Milestone
 
-Run the local synthetic pipeline:
+Run the scaled synthetic pipeline:
 
 ```bash
-.venv/bin/python scripts/run_synthetic_pipeline.py --samples-per-class 500 --cnn-epochs 18
+.venv/bin/python scripts/run_synthetic_pipeline.py --samples-per-class 2000 --cnn-epochs 40
 ```
 
 The pipeline generates data, trains classical baselines, trains the raw-IQ CNN,
@@ -50,17 +50,20 @@ tables and figures.
 
 ## Current Evidence Snapshot
 
-The current scaled synthetic pilot uses 4,000 examples across eight modulation
+The current scaled synthetic run uses 16,000 examples across eight modulation
 classes. Clean held-out accuracy is:
 
-- Random Forest: 0.567
-- Raw-IQ CNN: 0.545
-- RBF-SVM: 0.544
-- Logistic Regression: 0.543
-- Simulated QFM-Kernel SVM: 0.423
+- Raw-IQ CNN: 0.654
+- Random Forest: 0.592
+- RBF-SVM: 0.570
+- Logistic Regression: 0.554
+- Simulated QFM-Kernel SVM: 0.410
+- Classical PCA-RBF SVM: 0.408
 
-These are pilot results, not final submission claims. The next paper-grade step
-is to validate the same workflow on a public RadioML benchmark.
+The full public benchmark run on RadioML2016.10A is also complete. The raw-IQ
+CNN achieved 0.5114 clean accuracy and 0.5231 macro-F1 on 20,000 held-out
+examples, with severe degradation under narrowband jamming, frequency offset,
+low SNR, multipath, and impulsive noise.
 
 ## Public Benchmark Workflow
 

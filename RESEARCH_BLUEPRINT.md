@@ -16,13 +16,14 @@ Reason for fit:
 
 ## Working Title
 
-**Quantum-Inspired Hybrid AI for Robust RF Signal Classification in Contested Spectrum Environments**
+**Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments**
 
-## Safer Alternate Titles
+## Positioning
 
-1. **Robust RF Signal Classification Under Jamming and Low-SNR Conditions Using Hybrid AI and Quantum-Inspired Feature Maps**
-2. **Quantum-Kernel-Assisted Machine Learning for Robust Automatic Modulation Classification in Degraded RF Channels**
-3. **Engineering Robustness Evaluation of AI-Based RF Modulation Recognition in Contested Spectrum Conditions**
+The safest journal framing is a robustness-benchmarking and ablation paper,
+not a quantum-advantage paper. The contribution is the reproducible comparison
+of classical ML, raw-IQ CNN, simulated quantum-kernel SVM, and same-feature
+PCA-RBF SVM under clean and degraded RF conditions.
 
 ## Main Research Question
 
@@ -51,8 +52,9 @@ or idealized RF signals may fail when the channel is contested or degraded.
    - impulsive noise
 3. Baseline comparison:
    - classical ML on engineered RF features
-   - CNN / CNN-LSTM / TCN baselines on raw IQ samples
-   - quantum-inspired kernel classifier on compact RF features
+   - raw-IQ CNN on signal samples
+   - simulated quantum-kernel classifier on compact RF features
+   - same-feature PCA-RBF SVM ablation
 4. Robustness-drop analysis by degradation type and modulation class.
 5. Reproducibility package with scripts, config files, result logs, figures, and
    model metadata.
@@ -195,4 +197,3 @@ Mitigation:
 
 - Add RadioML benchmark data after the synthetic pilot.
 - Clearly separate synthetic and public-benchmark evidence.
-

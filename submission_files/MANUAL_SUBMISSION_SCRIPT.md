@@ -15,11 +15,11 @@ Original Article
 
 ## Full Title
 
-Quantum-Inspired Hybrid AI for Robust RF Signal Classification in Contested Spectrum Environments
+Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments
 
 ## Short Title
 
-Hybrid AI for Robust RF Signal Classification
+Robustness Benchmarking for RF Signal Classification
 
 ## Author Details
 
@@ -32,27 +32,30 @@ ORCID: https://orcid.org/0009-0008-5246-9421
 
 Automatic modulation classification is important for spectrum monitoring,
 secure wireless communications, cognitive radio, unmanned-system links, and
-defense-adjacent RF surveillance. However, many AI-based classifiers are
-reported under nominal channel conditions and are not stress-tested against
-contested-spectrum degradations such as low signal-to-noise ratio, jamming,
-multipath, carrier-frequency offset, and impulsive interference. This study
-develops a reproducible RF signal-classification workflow that compares
-classical machine-learning baselines, a raw-IQ convolutional neural network,
-and a simulated quantum feature-map kernel classifier under controlled
-degradation conditions. A synthetic IQ dataset containing eight modulation
-families was generated with controlled SNR variation and seven stress
-conditions. The workflow was first evaluated on a controlled synthetic IQ
-dataset and then validated on the public RadioML2016.10A benchmark containing
-220,000 examples, 11 modulation classes, and SNR values from -20 to 18 dB. On
-the RadioML full GPU run, the raw-IQ CNN achieved the highest clean accuracy
-(0.5114) and macro-F1 (0.5231), followed by Random Forest (0.4846 accuracy),
-RBF-SVM (0.4739), Logistic Regression (0.4344), and the simulated quantum
-feature-map kernel SVM (0.3091). Robustness testing showed major degradation
-under narrowband jamming, frequency offset, low SNR, multipath, and impulsive
-noise, demonstrating that clean accuracy alone is insufficient for RF model
-selection. The quantum-inspired kernel did not outperform classical or
-deep-learning baselines; therefore, the contribution is framed as transparent
-engineering benchmarking rather than a quantum-advantage claim.
+defense-adjacent RF surveillance. However, many AI-based RF classifiers are
+reported mainly under nominal channel assumptions, while practical receivers
+must operate under low signal-to-noise ratio, narrowband and broadband
+jamming, carrier-frequency offset, multipath, and impulsive interference. This
+study develops a reproducible robustness-benchmarking workflow that compares
+classical machine-learning baselines, a compact raw-IQ convolutional neural
+network, a simulated quantum feature-map kernel classifier, and a classical
+PCA-RBF SVM ablation baseline. The workflow was evaluated on a controlled
+synthetic IQ dataset with 16,000 examples and eight modulation families, and
+validated on the public RadioML2016.10A benchmark containing 220,000 examples,
+11 modulation classes, and SNR values from -20 to 18 dB. On the synthetic
+dataset, the raw-IQ CNN achieved the highest clean accuracy (0.654), followed
+by Random Forest (0.592), RBF-SVM (0.570), Logistic Regression (0.554), the
+simulated quantum kernel SVM (0.410), and the PCA-RBF ablation (0.408). On
+RadioML2016.10A, the raw-IQ CNN achieved the strongest clean accuracy (0.511)
+and macro-F1 (0.523). Robustness testing showed severe degradation under
+narrowband jamming, carrier-frequency offset, low SNR, multipath, and
+impulsive noise, demonstrating that clean accuracy alone is insufficient for RF
+model selection. The quantum-inspired kernel did not outperform the classical
+PCA-RBF ablation on the same compressed features, confirming that no
+quantum-feature-map advantage is supported by the evidence. The main
+engineering contribution is a transparent, reproducible robustness protocol
+with full public-benchmark validation, stress-condition failure analysis,
+ablation evidence, and computational complexity reporting.
 
 ## Keywords
 
@@ -66,9 +69,11 @@ Please consider this manuscript as an Original Article for Results in
 Engineering. The work presents a reproducible engineering workflow for
 robustness-aware RF signal classification under degraded and contested-spectrum
 conditions. The study compares classical machine learning, a raw-IQ deep
-learning baseline, and a simulated quantum feature-map kernel baseline using
-transparent held-out evaluation, robustness-drop analysis, and reproducibility
-artifacts.
+learning baseline, a simulated quantum feature-map kernel baseline, and a
+same-feature PCA-RBF SVM ablation using transparent held-out evaluation,
+robustness-drop analysis, computational complexity reporting, and
+reproducibility artifacts. The manuscript is explicitly framed as a robustness
+benchmark and ablation study, not as a quantum-advantage claim.
 
 The manuscript is submitted as independent research by Dr. Sai Krishna Thota.
 All data-generation scripts, evaluation code, summary tables, and figure

@@ -112,12 +112,14 @@ def markdown_to_docx(md_path: Path, out_path: Path, title_override: str | None =
     doc = new_doc()
     lines = md_path.read_text(encoding="utf-8").splitlines()
     pending_blank = False
+    in_references = False
     for raw in lines:
         line = raw.strip()
         if not line:
             pending_blank = True
             continue
         if line.startswith("# "):
+            in_references = False
             text = title_override or line[2:].strip()
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -127,7 +129,9 @@ def markdown_to_docx(md_path: Path, out_path: Path, title_override: str | None =
             r.font.size = Pt(16)
             continue
         if line.startswith("## "):
-            doc.add_heading(line[3:].strip(), level=1)
+            heading = line[3:].strip()
+            in_references = heading.lower() == "references"
+            doc.add_heading(heading, level=1)
             continue
         if line.startswith("### "):
             doc.add_heading(line[4:].strip(), level=2)
@@ -135,7 +139,7 @@ def markdown_to_docx(md_path: Path, out_path: Path, title_override: str | None =
         if line.startswith("- "):
             add_bullet(doc, line[2:].strip())
             continue
-        if len(line) > 3 and line[0].isdigit() and ". " in line[:4]:
+        if len(line) > 3 and line[0].isdigit() and ". " in line[:4] and not in_references:
             add_number(doc, line.split(". ", 1)[1].strip())
             continue
         if line.startswith("`") and line.endswith("`"):
@@ -164,11 +168,11 @@ def build_declaration() -> None:
 def build_highlights() -> None:
     doc = new_doc("Highlights")
     highlights = [
-        "Robust RF classifiers are evaluated under jamming and low-SNR stress.",
+        "Reproducible robustness benchmark evaluates RF classifiers under stress.",
         "Full RadioML2016.10A GPU validation covers 220,000 examples.",
-        "Classical ML, raw-IQ CNN, and quantum-inspired kernels are compared.",
+        "Classical ML, raw-IQ CNN, quantum kernel, and PCA-RBF ablation are compared.",
         "Robustness-drop metrics reveal stress-specific model failure modes.",
-        "No quantum-advantage claim is made; results support cautious benchmarking.",
+        "Quantum-inspired kernel shows no advantage over same-feature PCA-RBF SVM.",
     ]
     for item in highlights:
         add_bullet(doc, item)
@@ -187,11 +191,13 @@ def build_manuscript() -> None:
     doc = new_doc()
     md = ROOT / "manuscript" / "MANUSCRIPT_DRAFT.md"
     lines = md.read_text(encoding="utf-8").splitlines()
+    in_references = False
     for raw in lines:
         line = raw.strip()
         if not line:
             continue
         if line.startswith("# "):
+            in_references = False
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             r = p.add_run(line[2:].strip())
@@ -199,12 +205,14 @@ def build_manuscript() -> None:
             r.font.name = "Times New Roman"
             r.font.size = Pt(16)
         elif line.startswith("## "):
-            doc.add_heading(line[3:].strip(), level=1)
+            heading = line[3:].strip()
+            in_references = heading.lower() == "references"
+            doc.add_heading(heading, level=1)
         elif line.startswith("### "):
             doc.add_heading(line[4:].strip(), level=2)
         elif line.startswith("- "):
             add_bullet(doc, line[2:].strip())
-        elif len(line) > 3 and line[0].isdigit() and ". " in line[:4]:
+        elif len(line) > 3 and line[0].isdigit() and ". " in line[:4] and not in_references:
             add_number(doc, line.split(". ", 1)[1].strip())
         elif line.startswith("Keywords:"):
             add_para(doc, line)
@@ -241,6 +249,7 @@ def build_tables() -> None:
         ("RadioML full benchmark method configuration", "table_radioml2016_full_method_config.csv"),
         ("RadioML full benchmark robustness drops", "table_radioml2016_full_robustness_drop.csv"),
         ("RadioML full benchmark robustness metrics", "table_radioml2016_full_robustness_metrics.csv"),
+        ("Computational complexity and latency", "complexity_metrics.csv"),
         ("Synthetic clean performance", "table_synthetic_clean_performance.csv"),
         ("Synthetic accuracy by SNR", "table_synthetic_accuracy_by_snr.csv"),
         ("Synthetic robustness drops", "table_synthetic_robustness_drop.csv"),
@@ -258,7 +267,7 @@ def build_supplement() -> None:
     add_para(doc, "https://github.com/drsaikrishnathota1/quantum-ai-rf-signal-classification")
     doc.add_heading("Core Commands", level=1)
     commands = [
-        ".venv/bin/python scripts/run_synthetic_pipeline.py --samples-per-class 500 --cnn-epochs 18",
+        ".venv/bin/python scripts/run_synthetic_pipeline.py --samples-per-class 2000 --cnn-epochs 40",
         "python scripts/prepare_radioml2016_npz.py --input data/radioml/RML2016.10a_dict_optimized.pkl --out data/radioml/radioml2016_10a_clean.npz",
         "python scripts/add_stress_conditions_to_npz.py --input data/radioml/radioml2016_10a_clean.npz --out data/radioml/radioml2016_10a_stress.npz",
         "python scripts/train_pilot_classifiers.py --data data/radioml/radioml2016_10a_stress.npz --out results/radioml2016_classical --max-train-examples 30000 --max-test-examples 10000",
