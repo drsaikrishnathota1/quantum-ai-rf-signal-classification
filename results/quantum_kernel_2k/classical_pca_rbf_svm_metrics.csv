@@ -1,0 +1,9 @@
+model,condition,examples,accuracy,macro_f1
+classical_pca_rbf_svm,heldout_clean,480,0.4083333333333333,0.40539853489071886
+classical_pca_rbf_svm,clean,480,0.4083333333333333,0.40539853489071886
+classical_pca_rbf_svm,low_snr,480,0.16458333333333333,0.13859811496060656
+classical_pca_rbf_svm,narrowband_jam,480,0.23541666666666666,0.18119984255886576
+classical_pca_rbf_svm,broadband_jam,480,0.24583333333333332,0.24061431607342396
+classical_pca_rbf_svm,frequency_offset,480,0.32083333333333336,0.2848812637594625
+classical_pca_rbf_svm,multipath,480,0.34375,0.3194838314659849
+classical_pca_rbf_svm,impulsive_noise,480,0.20833333333333334,0.15655461258751804

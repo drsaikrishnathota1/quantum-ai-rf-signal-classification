@@ -12,6 +12,7 @@ MODEL_LABELS = {
     "random_forest": "Random Forest",
     "rbf_svm": "RBF-SVM",
     "simulated_quantum_feature_kernel_svm": "Simulated QFM-Kernel SVM",
+    "classical_pca_rbf_svm": "Classical PCA-RBF SVM",
     "iq_cnn": "Raw-IQ CNN",
 }
 
@@ -22,6 +23,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--classical-drops", type=Path, default=Path("results/synthetic_500/pilot_robustness_drop.csv"))
     parser.add_argument("--quantum", type=Path, default=Path("results/quantum_kernel_500/quantum_kernel_metrics.csv"))
     parser.add_argument("--quantum-drops", type=Path, default=Path("results/quantum_kernel_500/quantum_kernel_robustness_drop.csv"))
+    parser.add_argument("--classical-pca", type=Path, default=Path("results/quantum_kernel_500/classical_pca_rbf_svm_metrics.csv"))
+    parser.add_argument("--classical-pca-drops", type=Path, default=Path("results/quantum_kernel_500/classical_pca_rbf_svm_robustness_drop.csv"))
     parser.add_argument("--cnn", type=Path, default=Path("results/cnn_500/cnn_metrics.csv"))
     parser.add_argument("--cnn-drops", type=Path, default=Path("results/cnn_500/cnn_robustness_drop.csv"))
     parser.add_argument("--classical-snr", type=Path, default=Path("results/synthetic_500/accuracy_by_snr.csv"))
@@ -194,6 +197,10 @@ def main() -> None:
 
     metric_frames = [pd.read_csv(args.classical), pd.read_csv(args.quantum)]
     drop_frames = [pd.read_csv(args.classical_drops), pd.read_csv(args.quantum_drops)]
+    if args.classical_pca.exists():
+        metric_frames.append(pd.read_csv(args.classical_pca))
+    if args.classical_pca_drops.exists():
+        drop_frames.append(pd.read_csv(args.classical_pca_drops))
     if args.cnn.exists():
         metric_frames.append(pd.read_csv(args.cnn))
     if args.cnn_drops.exists():

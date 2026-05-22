@@ -1,6 +1,7 @@
 model,model_label,accuracy,macro_f1
-random_forest,Random Forest,0.567,0.5650026224342656
-iq_cnn,Raw-IQ CNN,0.545,0.4633222487397604
-rbf_svm,RBF-SVM,0.544,0.5458910311645749
-logistic_regression,Logistic Regression,0.543,0.5414433241661001
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,0.4229166666666666,0.422354754311052
+iq_cnn,Raw-IQ CNN,0.6535,0.6232038204875396
+random_forest,Random Forest,0.59225,0.5897310956059217
+rbf_svm,RBF-SVM,0.56975,0.5658676149948219
+logistic_regression,Logistic Regression,0.55425,0.5432834239571942
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,0.4104166666666666,0.4079710971115751
+classical_pca_rbf_svm,Classical PCA-RBF SVM,0.4083333333333333,0.4053985348907188

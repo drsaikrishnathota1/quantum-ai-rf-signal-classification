@@ -179,6 +179,70 @@ def main() -> None:
         },
         args.out / "quantum_kernel_model.joblib",
     )
+
+    # ------------------------------------------------------------------ #
+    #  Classical PCA-RBF SVM Ablation Baseline                           #
+    #  Trains a standard RBF-kernel SVM on the SAME 5-dimensional PCA    #
+    #  features to isolate the contribution of the quantum feature map.  #
+    # ------------------------------------------------------------------ #
+    print("\n--- Classical PCA-RBF SVM Ablation ---")
+    train_pca = pca.transform(feature_scaler.transform(extract_features(x_train_raw)))
+    test_pca = pca.transform(feature_scaler.transform(extract_features(x_test_raw)))
+
+    from sklearn.pipeline import Pipeline as _Pipeline
+
+    classical_pca_svm = _Pipeline([
+        ("scale", StandardScaler()),
+        ("clf", SVC(kernel="rbf", C=4.0, gamma="scale")),
+    ])
+    classical_pca_svm.fit(train_pca, y_train)
+
+    def evaluate_classical(condition: str, x_eval: np.ndarray, y_eval: np.ndarray) -> dict[str, float | str | int]:
+        feat = pca.transform(feature_scaler.transform(extract_features(x_eval)))
+        pred = classical_pca_svm.predict(feat)
+        return {
+            "model": "classical_pca_rbf_svm",
+            "condition": condition,
+            "examples": int(len(y_eval)),
+            "accuracy": float(accuracy_score(y_eval, pred)),
+            "macro_f1": float(f1_score(y_eval, pred, average="macro")),
+        }
+
+    classical_records = [evaluate_classical("heldout_clean", x_test_raw, y_test)]
+    for condition in stress_conditions:
+        xs = data[f"X_{condition}"][test_idx]
+        ys = data[f"y_{condition}"][test_idx]
+        classical_records.append(evaluate_classical(condition, xs, ys))
+
+    classical_df = pd.DataFrame(classical_records)
+    classical_clean = classical_df[classical_df["condition"] == "clean"].iloc[0]
+    classical_drop_rows = []
+    for _, row in classical_df.iterrows():
+        if row["condition"] in {"heldout_clean", "clean"}:
+            continue
+        classical_drop_rows.append(
+            {
+                "model": row["model"],
+                "condition": row["condition"],
+                "accuracy": row["accuracy"],
+                "accuracy_drop_pct": float(
+                    (classical_clean["accuracy"] - row["accuracy"]) / classical_clean["accuracy"] * 100
+                ),
+                "macro_f1": row["macro_f1"],
+                "macro_f1_drop_pct": float(
+                    (classical_clean["macro_f1"] - row["macro_f1"]) / classical_clean["macro_f1"] * 100
+                ),
+            }
+        )
+
+    classical_df.to_csv(args.out / "classical_pca_rbf_svm_metrics.csv", index=False)
+    pd.DataFrame(classical_drop_rows).to_csv(
+        args.out / "classical_pca_rbf_svm_robustness_drop.csv", index=False
+    )
+    joblib.dump(classical_pca_svm, args.out / "classical_pca_rbf_svm.joblib")
+    print(classical_df.round(4).to_string(index=False))
+    print(f"Saved classical PCA-RBF SVM ablation outputs to {args.out}")
+
     summary = {
         "dataset": str(args.data),
         "modulations": modulations,
@@ -187,8 +251,10 @@ def main() -> None:
         "train_examples": int(len(y_train)),
         "test_examples_per_condition": int(args.max_test_per_class * len(np.unique(y))),
         "entangle_strength": args.entangle_strength,
-        "clean_accuracy": float(clean["accuracy"]),
-        "clean_macro_f1": float(clean["macro_f1"]),
+        "quantum_clean_accuracy": float(clean["accuracy"]),
+        "quantum_clean_macro_f1": float(clean["macro_f1"]),
+        "classical_pca_rbf_clean_accuracy": float(classical_clean["accuracy"]),
+        "classical_pca_rbf_clean_macro_f1": float(classical_clean["macro_f1"]),
     }
     (args.out / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(df.round(4).to_string(index=False))

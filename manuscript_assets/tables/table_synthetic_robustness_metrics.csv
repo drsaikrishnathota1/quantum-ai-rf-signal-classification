@@ -1,31 +1,37 @@
 model,model_label,condition,accuracy,macro_f1
-logistic_regression,Logistic Regression,low_snr,0.278,0.2871169298792644
-logistic_regression,Logistic Regression,narrowband_jam,0.263,0.1950429757053615
-logistic_regression,Logistic Regression,broadband_jam,0.361,0.352984016662255
-logistic_regression,Logistic Regression,frequency_offset,0.471,0.4787256419027839
-logistic_regression,Logistic Regression,multipath,0.387,0.3813395786550696
-logistic_regression,Logistic Regression,impulsive_noise,0.253,0.2121173847970271
-random_forest,Random Forest,low_snr,0.298,0.2911016006734671
-random_forest,Random Forest,narrowband_jam,0.214,0.1211721251741021
-random_forest,Random Forest,broadband_jam,0.36,0.3592730857655858
-random_forest,Random Forest,frequency_offset,0.445,0.4354903043197247
-random_forest,Random Forest,multipath,0.374,0.3362547981187014
-random_forest,Random Forest,impulsive_noise,0.271,0.2182482708889311
-rbf_svm,RBF-SVM,low_snr,0.262,0.2756076697877295
-rbf_svm,RBF-SVM,narrowband_jam,0.238,0.1742334514245748
-rbf_svm,RBF-SVM,broadband_jam,0.328,0.3383435870897339
-rbf_svm,RBF-SVM,frequency_offset,0.471,0.4763173186723251
-rbf_svm,RBF-SVM,multipath,0.381,0.3567674125990561
-rbf_svm,RBF-SVM,impulsive_noise,0.282,0.2173841358874271
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,low_snr,0.15625,0.1448076122431467
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,narrowband_jam,0.2625,0.1873942618759652
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,broadband_jam,0.2520833333333333,0.2387141859244597
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,frequency_offset,0.3333333333333333,0.3177882876902636
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,multipath,0.3208333333333333,0.2987882199857186
-simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,impulsive_noise,0.2083333333333333,0.1542355324995699
-iq_cnn,Raw-IQ CNN,low_snr,0.388,0.3236809655854106
-iq_cnn,Raw-IQ CNN,narrowband_jam,0.251,0.2101492746094432
-iq_cnn,Raw-IQ CNN,broadband_jam,0.438,0.3725213722894425
-iq_cnn,Raw-IQ CNN,frequency_offset,0.23,0.1388055528072122
-iq_cnn,Raw-IQ CNN,multipath,0.5,0.4646054892459412
-iq_cnn,Raw-IQ CNN,impulsive_noise,0.443,0.415559088665455
+logistic_regression,Logistic Regression,low_snr,0.28,0.2870314218967745
+logistic_regression,Logistic Regression,narrowband_jam,0.2435,0.1693523421192544
+logistic_regression,Logistic Regression,broadband_jam,0.35925,0.3705565949640995
+logistic_regression,Logistic Regression,frequency_offset,0.476,0.4643953296076513
+logistic_regression,Logistic Regression,multipath,0.4045,0.3726429451711132
+logistic_regression,Logistic Regression,impulsive_noise,0.26225,0.2183067378959207
+random_forest,Random Forest,low_snr,0.28025,0.2744975327938809
+random_forest,Random Forest,narrowband_jam,0.215,0.098887254993302
+random_forest,Random Forest,broadband_jam,0.3885,0.3868341347904699
+random_forest,Random Forest,frequency_offset,0.44,0.4268675910434997
+random_forest,Random Forest,multipath,0.36725,0.3334482030601159
+random_forest,Random Forest,impulsive_noise,0.267,0.2116823266058832
+rbf_svm,RBF-SVM,low_snr,0.25475,0.2560122772259977
+rbf_svm,RBF-SVM,narrowband_jam,0.203,0.1234276831077533
+rbf_svm,RBF-SVM,broadband_jam,0.35175,0.3630226612409287
+rbf_svm,RBF-SVM,frequency_offset,0.46275,0.4557037094078753
+rbf_svm,RBF-SVM,multipath,0.39825,0.3652058620315484
+rbf_svm,RBF-SVM,impulsive_noise,0.26625,0.2016690116118811
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,low_snr,0.19375,0.1671121900498321
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,narrowband_jam,0.2229166666666666,0.1684464961090288
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,broadband_jam,0.2416666666666666,0.2369599990476412
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,frequency_offset,0.31875,0.2819635382979089
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,multipath,0.3354166666666666,0.3195785711634828
+simulated_quantum_feature_kernel_svm,Simulated QFM-Kernel SVM,impulsive_noise,0.1604166666666666,0.1209094949869178
+classical_pca_rbf_svm,Classical PCA-RBF SVM,low_snr,0.1645833333333333,0.1385981149606065
+classical_pca_rbf_svm,Classical PCA-RBF SVM,narrowband_jam,0.2354166666666666,0.1811998425588657
+classical_pca_rbf_svm,Classical PCA-RBF SVM,broadband_jam,0.2458333333333333,0.2406143160734239
+classical_pca_rbf_svm,Classical PCA-RBF SVM,frequency_offset,0.3208333333333333,0.2848812637594625
+classical_pca_rbf_svm,Classical PCA-RBF SVM,multipath,0.34375,0.3194838314659849
+classical_pca_rbf_svm,Classical PCA-RBF SVM,impulsive_noise,0.2083333333333333,0.156554612587518
+iq_cnn,Raw-IQ CNN,low_snr,0.41425,0.3971112211845525
+iq_cnn,Raw-IQ CNN,narrowband_jam,0.2045,0.1488437113864719
+iq_cnn,Raw-IQ CNN,broadband_jam,0.5075,0.4832720140667552
+iq_cnn,Raw-IQ CNN,frequency_offset,0.246,0.178869906204423
+iq_cnn,Raw-IQ CNN,multipath,0.44975,0.448028089948897
+iq_cnn,Raw-IQ CNN,impulsive_noise,0.218,0.1875835248966885
