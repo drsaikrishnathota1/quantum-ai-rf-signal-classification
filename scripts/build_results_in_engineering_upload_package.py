@@ -108,17 +108,42 @@ def add_csv_table(doc: Document, csv_path: Path, title: str, max_rows: int | Non
     add_para(doc)
 
 
-def markdown_to_docx(md_path: Path, out_path: Path, title_override: str | None = None) -> None:
-    doc = new_doc()
-    lines = md_path.read_text(encoding="utf-8").splitlines()
-    pending_blank = False
+def _is_numbered_item(line: str) -> bool:
+    head = line.split(". ", 1)
+    return len(head) == 2 and head[0].isdigit()
+
+
+def _starts_block(line: str, in_references: bool) -> bool:
+    if not line:
+        return True
+    if line.startswith(("# ", "## ", "### ", "- ")):
+        return True
+    if not in_references and _is_numbered_item(line):
+        return True
+    if line.startswith("`") and line.endswith("`"):
+        return True
+    return False
+
+
+def render_markdown_lines(doc: Document, lines: list[str], title_override: str | None = None) -> None:
+    pending_para: list[str] = []
     in_references = False
-    for raw in lines:
+    idx = 0
+
+    def flush_para() -> None:
+        if pending_para:
+            add_para(doc, " ".join(pending_para))
+            pending_para.clear()
+
+    while idx < len(lines):
+        raw = lines[idx]
         line = raw.strip()
         if not line:
-            pending_blank = True
+            flush_para()
+            idx += 1
             continue
         if line.startswith("# "):
+            flush_para()
             in_references = False
             text = title_override or line[2:].strip()
             p = doc.add_paragraph()
@@ -127,29 +152,65 @@ def markdown_to_docx(md_path: Path, out_path: Path, title_override: str | None =
             r.bold = True
             r.font.name = "Times New Roman"
             r.font.size = Pt(16)
+            idx += 1
             continue
         if line.startswith("## "):
+            flush_para()
             heading = line[3:].strip()
             in_references = heading.lower() == "references"
             doc.add_heading(heading, level=1)
+            idx += 1
             continue
         if line.startswith("### "):
+            flush_para()
             doc.add_heading(line[4:].strip(), level=2)
+            idx += 1
             continue
-        if line.startswith("- "):
-            add_bullet(doc, line[2:].strip())
+        if line.startswith("- ") and not in_references:
+            flush_para()
+            item_parts = [line[2:].strip()]
+            idx += 1
+            while idx < len(lines):
+                next_line = lines[idx].strip()
+                if not next_line or _starts_block(next_line, in_references):
+                    break
+                item_parts.append(next_line)
+                idx += 1
+            add_bullet(doc, " ".join(item_parts))
             continue
-        if len(line) > 3 and line[0].isdigit() and ". " in line[:4] and not in_references:
-            add_number(doc, line.split(". ", 1)[1].strip())
+        if _is_numbered_item(line) and not in_references:
+            flush_para()
+            item_parts = [line.split(". ", 1)[1].strip()]
+            idx += 1
+            while idx < len(lines):
+                next_line = lines[idx].strip()
+                if not next_line or _starts_block(next_line, in_references):
+                    break
+                item_parts.append(next_line)
+                idx += 1
+            add_number(doc, " ".join(item_parts))
+            continue
+        if _is_numbered_item(line) and in_references:
+            flush_para()
+            add_para(doc, line)
+            idx += 1
             continue
         if line.startswith("`") and line.endswith("`"):
+            flush_para()
             p = doc.add_paragraph()
             r = p.add_run(line.strip("`"))
             r.italic = True
+            idx += 1
             continue
-        if pending_blank:
-            pending_blank = False
-        add_para(doc, line)
+        pending_para.append(line)
+        idx += 1
+    flush_para()
+
+
+def markdown_to_docx(md_path: Path, out_path: Path, title_override: str | None = None) -> None:
+    doc = new_doc()
+    lines = md_path.read_text(encoding="utf-8").splitlines()
+    render_markdown_lines(doc, lines, title_override=title_override)
     doc.save(out_path)
 
 
@@ -168,7 +229,7 @@ def build_declaration() -> None:
 def build_highlights() -> None:
     doc = new_doc("Highlights")
     highlights = [
-        "Reproducible robustness benchmark evaluates RF classifiers under stress.",
+        "RSC-Bench provides a reproducible RF classifier robustness protocol.",
         "Full RadioML2016.10A GPU validation covers 220,000 examples.",
         "Classical ML, raw-IQ CNN, quantum kernel, and PCA-RBF ablation are compared.",
         "Robustness-drop metrics reveal stress-specific model failure modes.",
@@ -191,37 +252,7 @@ def build_manuscript() -> None:
     doc = new_doc()
     md = ROOT / "manuscript" / "MANUSCRIPT_DRAFT.md"
     lines = md.read_text(encoding="utf-8").splitlines()
-    in_references = False
-    for raw in lines:
-        line = raw.strip()
-        if not line:
-            continue
-        if line.startswith("# "):
-            in_references = False
-            p = doc.add_paragraph()
-            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            r = p.add_run(line[2:].strip())
-            r.bold = True
-            r.font.name = "Times New Roman"
-            r.font.size = Pt(16)
-        elif line.startswith("## "):
-            heading = line[3:].strip()
-            in_references = heading.lower() == "references"
-            doc.add_heading(heading, level=1)
-        elif line.startswith("### "):
-            doc.add_heading(line[4:].strip(), level=2)
-        elif line.startswith("- "):
-            add_bullet(doc, line[2:].strip())
-        elif len(line) > 3 and line[0].isdigit() and ". " in line[:4] and not in_references:
-            add_number(doc, line.split(". ", 1)[1].strip())
-        elif line.startswith("Keywords:"):
-            add_para(doc, line)
-        elif line.startswith("`") and line.endswith("`"):
-            p = doc.add_paragraph()
-            r = p.add_run(line.strip("`"))
-            r.italic = True
-        else:
-            add_para(doc, line)
+    render_markdown_lines(doc, lines)
 
     doc.add_section(WD_SECTION.NEW_PAGE)
     doc.add_heading("Data Availability", level=1)
@@ -236,6 +267,13 @@ def build_manuscript() -> None:
     add_para(doc, "This research received no external funding.")
     doc.add_heading("Declaration of Interests", level=1)
     add_para(doc, "The author declares no known competing financial interests or personal relationships.")
+    doc.add_heading("AI-Assisted Writing Disclosure", level=1)
+    add_para(
+        doc,
+        "AI-assisted drafting and code-generation tools were used for editorial drafting, "
+        "code scaffolding, and consistency checking. The author reviewed, executed, and "
+        "verified the analyses, metrics, and final text."
+    )
     doc.add_heading("Author Contribution", level=1)
     add_para(doc, "The author conceived the study, designed the simulation protocol, ran the experiments, interpreted the results, and prepared the manuscript.")
     doc.save(OUT / "03_Manuscript.docx")

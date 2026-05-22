@@ -15,9 +15,12 @@ it is a local quality-control note.
 ## Corrections Applied To This Manuscript
 
 - Reframed the paper as a reproducible robustness benchmark and ablation study.
-- Expanded the literature base to 25 references covering classical AMC, deep
+- Expanded the literature base to 34 references covering classical AMC, deep
   AMC, RFML robustness/adversarial work, jamming, and quantum-kernel learning.
 - Added a dedicated Related Work And Research Gap section.
+- Added the named RSC-Bench protocol, formal pseudocode, and complexity
+  analysis so the contribution is not merely a loose integration of existing
+  models.
 - Clarified that the work does not claim quantum advantage.
 - Added same-feature PCA-RBF SVM ablation against the simulated quantum kernel.
 - Added computational complexity and latency reporting.
@@ -30,9 +33,10 @@ it is a local quality-control note.
 
 Use this central claim:
 
-Clean RF classification accuracy is not enough for contested-spectrum model
-selection. A submission-grade evaluation should report clean performance,
-degraded-condition robustness drops, ablation evidence, and computational cost.
+RSC-Bench is a reproducible robustness-evaluation protocol for
+contested-spectrum RF signal classification, combining clean performance,
+degraded-condition drops, same-feature quantum/classical kernel ablation, and
+computational-cost reporting.
 
 Do not claim:
 
@@ -40,4 +44,3 @@ Do not claim:
 - operational deployment readiness;
 - classified defense validation;
 - superiority over the full AMC literature.
-

@@ -2,29 +2,32 @@
 
 Dear Editor,
 
-Please consider the manuscript titled "Robustness Benchmarking of Classical,
-Deep, and Quantum-Inspired AI for RF Signal Classification in Contested
-Spectrum Environments" for publication as an Original Article in Results in
-Engineering.
+Please consider the manuscript titled "RSC-Bench: Robustness Benchmarking of
+Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in
+Contested Spectrum Environments" for publication as an Original Article in
+Results in Engineering.
 
 The manuscript addresses an engineering problem in robust RF signal
 classification: AI systems that perform adequately under nominal signal
 conditions can degrade sharply under low SNR, jamming, multipath, frequency
-offset, and impulsive interference. The study develops a reproducible
-evaluation workflow that compares classical machine-learning baselines, a
-raw-IQ convolutional neural network, a simulated quantum feature-map kernel
-classifier, and a same-feature PCA-RBF SVM ablation under controlled
-degraded-spectrum conditions. The final evidence package includes a full
-RadioML2016.10A GPU validation with 220,000 converted examples, a scaled
-synthetic benchmark, clean benchmark results, robustness-drop analysis,
-computational complexity reporting, and generated manuscript figures and
-tables.
+offset, and impulsive interference. The study develops RSC-Bench, a named
+reproducible robustness-evaluation protocol that compares classical
+machine-learning baselines, a raw-IQ convolutional neural network, a simulated
+quantum feature-map kernel classifier, and a same-feature PCA-RBF SVM ablation
+under controlled degraded-spectrum conditions. The final evidence package
+includes a full RadioML2016.10A GPU validation with 220,000 converted
+examples, a scaled synthetic benchmark, clean benchmark results,
+robustness-drop analysis, formal pseudocode, computational-complexity
+reporting, and generated manuscript figures and tables.
 
 The manuscript has also been strengthened with an expanded literature survey
 covering classical AMC, deep-learning RF classification, robust/adversarial
-RFML, jamming, and quantum-kernel learning. The novelty is positioned as a
-reproducible robustness-benchmarking and ablation workflow, not as a simple
-application of an existing classifier.
+RFML, jamming, recent Results in Engineering AMR work, and quantum-kernel
+learning. The novelty is positioned as a named robustness protocol and ablation
+framework, not as a simple application of an existing classifier. This is
+aligned with Results in Engineering's guidance that AI/ML submissions should
+provide novelty beyond reapplication and should remain grounded in a clear
+engineering problem.
 
 The work is framed cautiously. It does not claim quantum advantage. Instead, it
 uses the quantum-inspired component as an evaluated compact feature-map

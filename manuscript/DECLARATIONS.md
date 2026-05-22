@@ -35,3 +35,9 @@ Synthetic datasets are generated from repository scripts and are excluded from
 Git because they are reproducible binary artifacts. The RadioML2016.10A raw
 dataset is not redistributed; access instructions and license terms are cited
 from the original data provider or validated public mirror.
+
+## AI-Assisted Writing Disclosure
+
+AI-assisted drafting and code-generation tools were used for editorial
+drafting, code scaffolding, and consistency checking. The author reviewed,
+executed, and verified the analyses, metrics, and final text.

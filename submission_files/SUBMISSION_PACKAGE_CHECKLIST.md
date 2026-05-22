@@ -14,6 +14,8 @@ Reason:
 - RadioML2016.10A full GPU validation is complete.
 - The manuscript package now includes full RadioML clean-performance and
   robustness-drop evidence.
+- The manuscript now includes the named RSC-Bench protocol, formal pseudocode,
+  complexity analysis, 34 references, and AI-assisted writing disclosure.
 
 ## Files To Prepare For Final Upload
 

@@ -2,7 +2,7 @@
 
 Working title:
 
-**Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments**
+**RSC-Bench: Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments**
 
 Target journal:
 
@@ -22,10 +22,9 @@ offset, and impulsive noise.
 The paper will not claim quantum advantage. The safer and more defensible
 claim is:
 
-> Clean RF classification accuracy is not enough for contested-spectrum model
-> selection; classical ML, raw-IQ CNN, simulated quantum-kernel, and same-feature
-> PCA-RBF ablation baselines should be compared under reproducible degraded RF
-> stress conditions.
+> RSC-Bench is a reproducible robustness-evaluation protocol for contested-spectrum
+> RF signal classification, combining clean performance, degraded-condition drops,
+> same-feature quantum/classical kernel ablation, and computational-cost reporting.
 
 ## Evidence Path
 

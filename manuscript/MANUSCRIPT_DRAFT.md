@@ -1,4 +1,4 @@
-# Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments
+# RSC-Bench: Robustness Benchmarking of Classical, Deep, and Quantum-Inspired AI for RF Signal Classification in Contested Spectrum Environments
 
 ## Abstract
 
@@ -8,10 +8,14 @@ defense-adjacent RF surveillance. However, many AI-based RF classifiers are
 reported mainly under nominal channel assumptions, while practical receivers
 must operate under low signal-to-noise ratio, narrowband and broadband
 jamming, carrier-frequency offset, multipath, and impulsive interference. This
-study develops a reproducible robustness-benchmarking workflow that compares
-classical machine-learning baselines, a compact raw-IQ convolutional neural
-network, a simulated quantum feature-map kernel classifier, and a classical
-PCA-RBF SVM ablation baseline. The workflow was evaluated on a controlled
+study develops RSC-Bench, a reproducible robustness-benchmarking protocol that
+compares classical machine-learning baselines, a compact raw-IQ convolutional
+neural network, a simulated quantum feature-map kernel classifier, and a
+classical PCA-RBF SVM ablation baseline. The novelty of this work is
+RSC-Bench, a reproducible robustness-evaluation protocol that couples clean RF
+modulation classification with stress-condition operators, same-feature
+quantum/classical kernel ablation, and complexity reporting on both synthetic
+IQ data and RadioML2016.10A. The protocol was evaluated on a controlled
 synthetic IQ dataset with 16,000 examples and eight modulation families, and
 validated on the public RadioML2016.10A benchmark containing 220,000 examples,
 11 modulation classes, and SNR values from -20 to 18 dB. On the synthetic
@@ -44,7 +48,7 @@ management, and RF surveillance. Classical AMC work relied heavily on
 likelihood-based methods, higher-order statistics, cumulants, cyclostationary
 features, and engineered time/frequency-domain descriptors [1, 2]. More recent
 work has shown that deep neural networks can learn useful representations
-directly from raw IQ samples or derived signal representations [3-13].
+directly from raw IQ samples or derived signal representations [3-13, 26-34].
 
 Despite this progress, a gap remains between clean benchmark performance and
 operational robustness. Practical receivers may observe signals distorted by
@@ -70,6 +74,11 @@ degraded RF conditions, what failure modes appear, and does the
 quantum-inspired embedding add measurable value beyond a classical kernel on
 the same reduced feature space?
 
+The novelty of this work is RSC-Bench, a reproducible robustness-evaluation
+protocol that couples clean RF modulation classification with stress-condition
+operators, same-feature quantum/classical kernel ablation, and complexity
+reporting on both synthetic IQ data and RadioML2016.10A.
+
 ## 2. Related Work And Research Gap
 
 ### 2.1 Classical AMC and benchmark evolution
@@ -87,25 +96,31 @@ The RadioML family of datasets helped standardize deep-learning evaluation for
 radio signal classification [3-5]. RadioML2016.10A remains widely used because
 it provides labeled IQ sequences across multiple modulation types and SNR
 levels. Later works extended the benchmark setting with deeper architectures,
-larger datasets, distributed sensors, multistream fusion, and
-resource-constrained models [5-13].
+larger datasets, distributed sensors, multistream fusion,
+resource-constrained models, attention mechanisms, transformer blocks, and
+joint signal-detection/classification settings [5-13, 26-34].
 
 ### 2.2 Deep learning for RF signal classification
 
 Convolutional modulation-recognition networks demonstrated that raw IQ
 sequences can be learned directly by CNNs [3]. Deep architectures were then
 expanded through residual networks, CLDNN-style models, recurrent models,
-feature-fusion systems, and multi-domain input representations [4-13]. These
-works are essential because they show that deep models can outperform many
-hand-crafted feature pipelines, especially at moderate and high SNR.
+feature-fusion systems, attention mechanisms, transformer encoders, and
+multi-domain input representations [4-13, 26-34]. These works are essential
+because they show that deep models can outperform many hand-crafted feature
+pipelines, especially at moderate and high SNR.
 
 However, deep AMC literature often emphasizes clean or SNR-stratified
 performance rather than a broader stress-condition matrix. Some papers report
 accuracy by SNR, but fewer provide a controlled comparison of clean accuracy,
 low-SNR degradation, narrowband jamming, broadband jamming, carrier-frequency
 offset, multipath, impulsive noise, ablation against a compressed-feature
-kernel, and inference latency in one reproducible workflow. That gap motivates
-the present benchmark design.
+kernel, and inference latency in one reproducible workflow. Recent Results in
+Engineering work has shown that RadioML-based AMR papers are expected to
+include explicit ablations, efficiency metrics, and low-SNR robustness claims
+[31]. RSC-Bench extends this style by making the robustness matrix itself the
+primary contribution and by including a same-feature quantum/classical kernel
+ablation to avoid unsupported claims.
 
 ### 2.3 Robust RFML, jamming, and adversarial vulnerability
 
@@ -146,7 +161,7 @@ quantum-advantage claims.
 
 Compared with prior work, this study is positioned as a reproducible
 robustness benchmark rather than a single-model performance paper. The novelty
-is the combination of:
+is the named RSC-Bench protocol and the combination of:
 
 1. a stress-condition protocol covering six degraded RF conditions beyond
    clean evaluation;
@@ -228,26 +243,33 @@ conditions that can be audited and reproduced.
 
 ### 4.3 Classical and deep-learning models
 
-Classical baselines use engineered RF features derived from IQ statistics,
-amplitude statistics, phase statistics, spectral centroid, spectral bandwidth,
-and FFT peak-to-mean ratio. The evaluated classical models are Logistic
-Regression, Random Forest, and RBF-SVM.
+Classical baselines use a 15-dimensional engineered RF feature vector derived
+from IQ statistics, amplitude statistics, phase statistics, spectral centroid,
+spectral bandwidth, and FFT peak-to-mean ratio. The evaluated classical models
+are Logistic Regression, Random Forest, and RBF-SVM. Logistic Regression uses
+standardized features with maximum 1,500 iterations and regularization
+parameter `C = 2.0`; Random Forest uses 250 trees, random seed 2026, and
+minimum leaf size 2; RBF-SVM uses standardized features with `C = 8.0` and
+`gamma = scale`.
 
 The deep-learning baseline is a compact one-dimensional convolutional neural
 network trained directly on raw IQ samples. It uses three Conv1D blocks with
-batch normalization, ReLU activations, pooling, adaptive average pooling,
-dropout, and a linear classification head. In the full RadioML run, the CNN was
-trained on CUDA for 40 epochs with batch size 512 and best-epoch restoration.
-The final restored model came from epoch 18.
+channel widths 32, 64, and 128; kernel sizes 7, 5, and 3; batch
+normalization; ReLU activations; pooling; adaptive average pooling; dropout
+0.15; and a linear classification head. In the full RadioML run, the CNN was
+trained on CUDA for 40 epochs with batch size 512, AdamW optimization,
+learning rate 0.001, weight decay 0.0001, random seed 2026, and best-epoch
+restoration. The final restored model came from epoch 18.
 
 ### 4.4 Quantum-inspired kernel and classical ablation
 
 The quantum-inspired baseline is a simulated quantum feature-map kernel SVM. A
-32-dimensional engineered statistical feature vector is standardized and
+15-dimensional engineered statistical feature vector is standardized and
 projected to five dimensions using principal component analysis (PCA). The
-resulting five-dimensional vector is scaled to angular values and mapped to a
-complex `2^5`-dimensional simulated statevector using single-qubit angle
-features and pairwise phase interactions. The SVM is trained on a
+resulting five-dimensional vector is scaled to angular values in `[-pi, pi]`
+and mapped to a complex `2^5`-dimensional simulated statevector using
+single-qubit angle features and pairwise phase interactions with entanglement
+strength 0.35. The precomputed-kernel SVM uses `C = 4.0` and is trained on a
 fidelity-style precomputed kernel:
 
 `K(x_i, x_j) = |<psi(theta_i)|psi(theta_j)>|^2`
@@ -262,7 +284,73 @@ representational value, it should outperform this same-feature classical
 kernel. If it does not, the quantum-inspired embedding should be reported as a
 negative or neutral baseline rather than as a superior method.
 
-### 4.5 Evaluation protocol
+### 4.5 RSC-Bench protocol and formal pseudocode
+
+RSC-Bench is the named evaluation protocol used in this study. Its purpose is
+to prevent three common weaknesses in applied RFML papers: reporting clean
+accuracy without degradation evidence, comparing a quantum-inspired model only
+against weak baselines, and omitting computational cost.
+
+Algorithm 1. RSC-Bench robustness evaluation protocol.
+
+Input: clean dataset `D = {(x_i, y_i)}`, model set `M`, stress-operator set
+`S`, stratified split rule `pi`, metric set `G = {accuracy, macro-F1}`,
+feature extractor `phi`, and random seed `r`.
+
+Output: clean metrics, stress metrics, robustness-drop table, same-feature
+kernel ablation table, and complexity table.
+
+1. Normalize each IQ sequence `x_i` to unit average power.
+2. Split `D` into stratified training and held-out test sets using `pi` and
+   seed `r`.
+3. For each model `m` in `M`, train `m` on the clean training set or its
+   feature representation `phi(D_train)`.
+4. Evaluate each trained model on the clean held-out test set and record all
+   metrics in `G`.
+5. For each stress operator `s` in `S`, transform the held-out test signals as
+   `D_test_s = s(D_test)`.
+6. Evaluate every trained model on `D_test_s` without retraining.
+7. Compute robustness drop for each metric as
+   `drop_s = 100 * (metric_clean - metric_s) / metric_clean`.
+8. Train the simulated quantum feature-map kernel SVM on five PCA components
+   of `phi(D_train)`.
+9. Train a classical PCA-RBF SVM on the same five PCA components.
+10. Compare the two kernel models on clean and stressed test subsets to test
+    whether the quantum feature map adds value beyond the same compressed
+    classical feature space.
+11. Record training time, parameter or support-vector count, and per-sample
+    inference latency for each model family.
+12. Export reproducible CSV tables, figures, and repository commands.
+
+### 4.6 Computational complexity analysis
+
+Let `N_tr` and `N_te` denote the numbers of training and held-out test
+examples, `L = 128` denote IQ sequence length, `F = 15` denote the engineered
+feature dimension, `S` denote the number of stress operators, `M` denote the
+number of model families, `q = 5` denote the number of simulated qubits, and
+`n_q` denote the compact training subset used by the quantum-kernel model.
+Stress generation has time complexity `O(S N_te L)` and stores one transformed
+test array per stressor when materialized. Engineered-feature extraction has
+time complexity `O((N_tr + N_te) L log L)` because FFT-derived statistics are
+included, with feature memory `O((N_tr + N_te) F)`.
+
+For the classical models, Logistic Regression training scales approximately as
+`O(I N_tr F C)` for `I` optimizer iterations and `C` modulation classes, Random
+Forest training scales with the number of trees and split evaluations, and
+RBF-SVM training can scale between quadratic and cubic behavior in `N_tr`
+depending on the solver and support-vector count. The raw-IQ CNN has
+per-epoch training complexity proportional to the number of convolutional
+multiply-add operations across `N_tr` sequences and has inference complexity
+linear in the number of learned convolutional filters and sequence length.
+
+For the simulated quantum feature-map kernel, state construction costs
+`O(n_q 2^q)`, training-kernel construction costs `O(n_q^2 2^q)`, and
+precomputed SVM training can scale up to `O(n_q^3)` in the worst case. The
+kernel matrix requires `O(n_q^2)` memory and the state table requires
+`O(n_q 2^q)` memory. These costs motivate the compact 120 train-per-class and
+80 test-per-class RadioML configuration used for the quantum-kernel baseline.
+
+### 4.7 Evaluation protocol
 
 All models use stratified held-out evaluation. Clean performance is measured
 using accuracy and macro F1. Robustness is measured by evaluating the trained
@@ -400,7 +488,8 @@ readiness or quantum advantage.
 
 ## 8. Conclusion
 
-This work establishes a reproducible evaluation workflow for robustness-aware
+This work establishes RSC-Bench, a reproducible evaluation protocol for
+robustness-aware
 RF signal classification under degraded spectrum conditions. The full
 RadioML2016.10A GPU benchmark shows that the raw-IQ CNN has the strongest clean
 performance among the tested models, but also reveals large stress-condition
@@ -409,6 +498,18 @@ provide useful comparators, while the quantum-inspired result is best framed as
 a transparent baseline rather than a quantum-advantage result. The main
 engineering contribution is a reproducible robustness protocol and evidence
 package for AI-based RF classification in contested-spectrum environments.
+
+## 9. Submission Integrity And AI-Assisted Writing Disclosure
+
+All numerical results reported in the manuscript are derived from the CSV
+tables and figures generated by the repository scripts. No unresolved DOIs,
+unresolved funding statements, unresolved ethics statements, or unsupported
+quantum-advantage claims are intentionally retained. The raw RadioML2016.10A
+dataset is not redistributed; the manuscript reports derived metrics and
+provides commands for independent reproduction by users with lawful dataset
+access. AI-assisted drafting and code-generation tools were used for editorial
+drafting, code scaffolding, and consistency checking; the author reviewed,
+executed, and verified the analyses, metrics, and final text.
 
 ## References
 
@@ -437,3 +538,12 @@ package for AI-based RF classification in contested-spectrum environments.
 23. H.-Y. Huang, M. Broughton, M. Mohseni, R. Babbush, S. Boixo, H. Neven, and J. R. McClean, "Power of data in quantum machine learning," Nature Communications, vol. 12, 2631, 2021, doi: 10.1038/s41467-021-22539-9.
 24. S. Jerbi, L. J. Fiderer, H. P. Nautrup, J. M. Kubler, H. J. Briegel, and V. Dunjko, "Quantum machine learning beyond kernel methods," Nature Communications, vol. 14, 517, 2023, doi: 10.1038/s41467-023-36159-y.
 25. J. Biamonte et al., "Quantum machine learning," Nature, vol. 549, pp. 195-202, 2017, doi: 10.1038/nature23474.
+26. T. Huynh-The, C. H. Hua, Q. V. Pham, and D. S. Kim, "MCNet: An efficient CNN architecture for robust automatic modulation classification," IEEE Communications Letters, vol. 24, no. 4, pp. 811-815, 2020, doi: 10.1109/LCOMM.2020.2968030.
+27. A. P. Hermawan, R. R. Ginanjar, D. S. Kim, and J. M. Lee, "CNN-based automatic modulation classification for beyond 5G communications," IEEE Communications Letters, vol. 24, no. 5, pp. 1038-1041, 2020, doi: 10.1109/LCOMM.2020.2970922.
+28. N. Wang, Y. Liu, L. Ma, Y. Yang, and H. Wang, "Multidimensional CNN-LSTM network for automatic modulation classification," Electronics, vol. 10, no. 14, 1649, 2021, doi: 10.3390/electronics10141649.
+29. L. Weng, Y. He, J. Peng, J. Zheng, and X. Li, "Deep cascading network architecture for robust automatic modulation classification," Neurocomputing, vol. 455, pp. 308-324, 2021, doi: 10.1016/j.neucom.2021.05.010.
+30. Z. Lyu, Y. Wang, W. Li, L. Guo, J. Yang, J. Sun, M. Liu, and G. Gui, "Robust automatic modulation classification based on convolutional and recurrent fusion network," Physical Communication, vol. 43, 101213, 2020, doi: 10.1016/j.phycom.2020.101213.
+31. N. El-Haryqy, A. Kharbouche, H. Ouamna, Z. Madini, and Y. Zouine, "Improved automatic modulation recognition using deep learning with additive attention," Results in Engineering, vol. 26, 104783, 2025, doi: 10.1016/j.rineng.2025.104783.
+32. A. Kumar, M. S. Chaudhari, and S. Majhi, "Automatic modulation classification for OFDM systems using bi-stream and attention-based CNN-LSTM model," IEEE Communications Letters, 2024, doi: 10.1109/LCOMM.2023.3348512.
+33. C. Zhao, J. Chen, X. Huang, and Z. Wu, "A cross-scale embedding based fusion transformer for automatic modulation recognition," IEEE Communications Letters, vol. 28, no. 1, pp. 68-72, 2024, doi: 10.1109/LCOMM.2023.3331265.
+34. H. Xing, X. Zhang, S. Chang, J. Ren, Z. Zhang, J. Xu, and S. Cui, "Joint signal detection and automatic modulation classification via deep learning," IEEE Transactions on Wireless Communications, vol. 23, no. 11, pp. 17129-17142, 2024, doi: 10.1109/TWC.2024.3450972.
