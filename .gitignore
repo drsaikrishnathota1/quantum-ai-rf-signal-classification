@@ -30,3 +30,9 @@ results/radioml2016_*/
 # Local system/editor files
 .idea/
 .vscode/
+
+!results/synthetic_500_seed_0/
+!results/synthetic_500_seed_1/
+!results/synthetic_500_seed_2/
+!results/synthetic_500_seed_3/
+!results/synthetic_500_seed_4/
