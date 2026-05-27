@@ -1,0 +1,27 @@
+{
+  "dataset": "data/synthetic_iq_500.npz",
+  "num_examples": 4000,
+  "train_examples": 3000,
+  "test_examples": 1000,
+  "num_classes": 8,
+  "modulations": [
+    "BPSK",
+    "QPSK",
+    "8PSK",
+    "QAM16",
+    "QAM64",
+    "BFSK",
+    "AM-DSB",
+    "FM"
+  ],
+  "stress_conditions": [
+    "clean",
+    "low_snr",
+    "narrowband_jam",
+    "broadband_jam",
+    "frequency_offset",
+    "multipath",
+    "impulsive_noise"
+  ],
+  "best_clean_accuracy": 0.563
+}
