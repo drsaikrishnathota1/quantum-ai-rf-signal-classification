@@ -31,8 +31,8 @@ results/radioml2016_*/
 .idea/
 .vscode/
 
-!results/synthetic_500_seed_0/
-!results/synthetic_500_seed_1/
-!results/synthetic_500_seed_2/
-!results/synthetic_500_seed_3/
-!results/synthetic_500_seed_4/
+# Allow full GPU results
+
+# Allow full GPU results
+!results/radioml2016_full_cnn/
+!results/radioml2016_full_classical/
