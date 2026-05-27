@@ -30,3 +30,9 @@ results/radioml2016_*/
 # Local system/editor files
 .idea/
 .vscode/
+
+# Allow full GPU results
+
+# Allow full GPU results
+!results/radioml2016_full_cnn/
+!results/radioml2016_full_classical/

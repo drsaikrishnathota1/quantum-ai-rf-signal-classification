@@ -1,0 +1,24 @@
+{
+  "dataset": "data/radioml/radioml2016_10a_stress.npz",
+  "epochs": 40,
+  "batch_size": 256,
+  "device": "cuda",
+  "train_examples": 165000,
+  "test_examples": 55000,
+  "best_epoch": 23,
+  "modulations": [
+    "8PSK",
+    "AM-DSB",
+    "AM-SSB",
+    "BPSK",
+    "CPFSK",
+    "GFSK",
+    "PAM4",
+    "QAM16",
+    "QAM64",
+    "QPSK",
+    "WBFM"
+  ],
+  "clean_accuracy": 0.5585636363636364,
+  "clean_macro_f1": 0.5736458833316886
+}
